@@ -47,3 +47,6 @@ Instagram infinite + Button
 	No new posts are appearing, but the plus button doesn't disappear. 
 
 	If length of array is not increasing, then stop the algorithm. 
+
+
+

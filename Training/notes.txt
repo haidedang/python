@@ -1,0 +1,5 @@
+# Instructions 
+
+Bug: Selenium not FOund
+Solution: Change python environment to 3.9 and change back to python 3.8 
+
