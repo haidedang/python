@@ -1,0 +1,49 @@
+def __init__(self, username, pw):
+        self.driver = webdriver.Chrome(PATH)
+        self.username = username
+        self.driver.get("https://instagram.com")
+        sleep(2)
+        self.driver.find_element_by_xpath("//button[contains(text(), 'Accept')]").click()
+        self.driver.find_element_by_xpath("//input[@name=\"username\"]")\
+            .send_keys(username)
+        self.driver.find_element_by_xpath("//input[@name=\"password\"]")\
+            .send_keys(pw)
+        self.driver.find_element_by_xpath("//button[@type=\"submit\"]")\
+            .click()
+        sleep(4)  
+        self.driver.find_element_by_xpath("//button[contains(text(), 'Not Now')]").click()
+        sleep(4)  
+        self.driver.find_element_by_xpath("//button[contains(text(), 'Not Now')]").click()
+        sleep(4)  
+        
+
+
+
+Problem cases 
+
+#Case 1 
+Instagram inifinte Comment Loop 
+	On every click, a cycle of post is recurring in an infinite loop 
+	solution 1: real life tracking of double elements. Remove them right away , if length is not increasing then delete.
+
+	
+	After every click, wait and then save all links in an new array. 
+
+
+	Compare that array to the old array 
+
+obj [ name ] = 1 
+obj[ name ] = 2 
+
+for each element of new array check if exist in obj already. 
+if not append the name 
+
+if after 4 loop runs the number of new names is not increasing break out of loop. 
+
+
+	
+#Case 2 
+Instagram infinite + Button 
+	No new posts are appearing, but the plus button doesn't disappear. 
+
+	If length of array is not increasing, then stop the algorithm. 
