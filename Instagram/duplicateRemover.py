@@ -3,6 +3,8 @@ import imagehash
 import os
 import numpy as np
 import shutil
+from dotenv import load_dotenv
+load_dotenv()
 
 class DuplicateRemover:
     def __init__(self,dirname,hash_size = 8):
@@ -71,7 +73,7 @@ class DuplicateRemover:
     def delete_folder(self, location):
         shutil.rmtree(location)
 
-remover = DuplicateRemover(r"C:\Users\lee Stone\Desktop\dev\Python\Instagram\images")
+remover = DuplicateRemover(os.getenv("MAC"))
 remover.find_duplicates()
 # location = r"C:\Users\lee Stone\Desktop\dev\Python\Instagram\images"
 
