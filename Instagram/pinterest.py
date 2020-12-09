@@ -1,15 +1,19 @@
 from selenium import webdriver
 from time import sleep
 import urllib.request
-from duplicateRemover import DuplicateRemover
+from selenium.webdriver.chrome.options import Options
+#from duplicateRemover import DuplicateRemover
+import os
 
 PATH = "C:\Program Files (x86)\chromedriver.exe"
 SCROLL_PAUSE_TIME = 2
+chrome_options = Options()
+chrome_options.add_argument('--disable-dev-shm-usage')   
 
 class PinterestScraper:
     def __init__(self):
-        self.driver = webdriver.Chrome(PATH)
-        self.driver.get("https://www.pinterest.de/pin/23081016829947648/")
+        self.driver = webdriver.Chrome(options=chrome_options)
+        self.driver.get("https://www.pinterest.de/search/pins/?q=cottagecore%20dress&rs=typed&term_meta[]=cottagecore%7Ctyped&term_meta[]=dress%7Ctyped")
         sleep(4)
     
     def download_images(self):
@@ -20,17 +24,22 @@ class PinterestScraper:
         store = {}
         while True:
             images = self.driver.find_elements_by_css_selector('img')
+            sleep(2)
             for image in images:
-                src = image.get_attribute('src')
                 try:
-                    store[src]
-                    print('Exists already', n)
-                    continue
-                    
+                    src = image.get_attribute('src')
+                    try:
+                        store[src]
+                        print('Exists already', n)
+                        continue   
+                    except:
+                        downloadedImages.append(src)
+                        store[src]=n+1
+                        n+=1
                 except:
-                    downloadedImages.append(src)
-                    store[src]=n+1
-                    n+=1
+                    print('no image there')
+                    sleep(2)
+                    pass
             self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
             
             # Wait to load page
@@ -44,13 +53,11 @@ class PinterestScraper:
         i=0
         for image in downloadedImages:
             #print(f"C:\\Users\\lee Stone\\Desktop\\dev\\Python\\Instagram\\images\\{i}.jpg")
-            urllib.request.urlretrieve(image, f"C:\\Users\\lee Stone\\Desktop\\dev\\Python\\Instagram\\images\\{i}.png")
+            urllib.request.urlretrieve(image, os.getcwd()+ f"/images/{i}.png")
             i+=1
 
-         
-           
-   
         # location = r"C:\Users\lee Stone\Desktop\dev\Python\Instagram\images"
+#print(os.getcwd())
 
 pinterest = PinterestScraper()
 pinterest.download_images()
