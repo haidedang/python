@@ -55,7 +55,10 @@ class InstaBot:
         try:
             self.driver.find_element_by_xpath("//button[contains(text(), 'Akzeptieren')]").click()
         except NoSuchElementException:
-            self.driver.find_element_by_xpath("//button[contains(text(), 'Accept')]").click()
+            try:
+                self.driver.find_element_by_xpath("//button[contains(text(), 'Accept')]").click()
+            except NoSuchElementException:
+                pass
         try:
             self.driver.find_element_by_xpath("//button[contains(text(), 'Anmelden')]").click()
         except NoSuchElementException:
