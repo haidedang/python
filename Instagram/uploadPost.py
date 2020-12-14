@@ -6,21 +6,45 @@ import pyautogui
 import os
 import shutil
 from cv2 import cv2
+import random
 
 # from dotenv import load_dotenv
 
 chrome_options = Options()
+chrome_options.add_argument('--no-sandbox')  
+chrome_options.add_argument('--disable-dev-shm-usage')      
 mobile_emulation = { "deviceName": "iPhone X" }
 chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
 
 def moveFile(folder, dest):
-    for filename in os.listdir(folder):
-        img = cv2.imread(os.path.join(folder,filename))
+    folderPath = os.getcwd()+ '/' + folder
+    print(folderPath)
+    for filename in os.listdir(folderPath):
+        img = cv2.imread(os.path.join(folderPath,filename))
         if img is not None:
             print(filename)
             # dest = /posting or /finished
-            shutil.move(os.path.join(folder,filename), os.getcwd()+ '/' + dest)
+            shutil.move(os.path.join(folderPath,filename), os.getcwd() + '/' + dest)
             break
+
+hashTags = "#cottagecore #cottagecoreaesthetic #witchy #mushroom #botanicalillustration #tarotcards #cottage #katharsis #cabincore #cabin #aesthetic #flowers #forest #forestlover #ceramics #meadow #nature #lemontree #fruitbasket #naturewitch #moodboard #moodboardaesthetic #naturelovers #retro #vintageaesthetic #retroaesthetic #fairycore #cottagecoreaesthetic #farmcore #grandmacore #countryside #arthoe #plantcore #angelcore #softcore #forestcore #lovecore #forestnymph #softgirl #morikei #warmcore #fairycore #fairycoreaesthetic #faeriecore #honeycore #warmaesthetic #cloudaesthetic #aestheticallypleasing #myaesthetic #cottagecore #cottagecoreaesthetic #cottagecorefashion #cottagecorestyle #vintagedresses #fairyfashion #princessdress #princessdresses #praerigirl #morikei #morigirl #farmcoreaesthetic #farmcore"
+
+arr = hashTags.split() 
+mySet = list(set(arr))
+#print(mySet)
+#print(random.choice(mySet))
+
+def hashTagSelector(hashtags):
+    result= []
+    for i in range(0,20):
+        element = random.choice(hashtags)
+        if element not in result:
+            result.append(element)
+            #print(result)
+    return " ".join(result)
+  
+
+# hashTagSelector(mySet)
         
 class InstaBot:
     def __init__(self, username, pw):
@@ -31,7 +55,10 @@ class InstaBot:
         try:
             self.driver.find_element_by_xpath("//button[contains(text(), 'Akzeptieren')]").click()
         except NoSuchElementException:
-            self.driver.find_element_by_xpath("//button[contains(text(), 'Accept')]").click()
+            try:
+                self.driver.find_element_by_xpath("//button[contains(text(), 'Accept')]").click()
+            except NoSuchElementException:
+                pass
         try:
             self.driver.find_element_by_xpath("//button[contains(text(), 'Anmelden')]").click()
         except NoSuchElementException:
@@ -70,21 +97,22 @@ class InstaBot:
            .click()
         sleep(4)
 
+        pyautogui.FAILSAFE= False
+
         #move first file of folder images to posting folder
         moveFile('images','posting')
         
-        # pick selenium folder
-        pyautogui.moveTo(60, 160)
+        #select Instagram folder 
+        pyautogui.moveTo(200, 105)
         sleep(2)
-        pyautogui.click()
+        pyautogui.doubleClick()
+        sleep(2)
 
-        # pyautogui.displayMousePosition()
-
-        # select posting folder
-        #pyautogui.moveTo(200, 105)
+        #select posting folder 
         pyautogui.moveTo(217, 154)
         sleep(2)
         pyautogui.doubleClick()
+        sleep(2)
 
         # show file extensions
         pyautogui.moveTo(1056, 772)
@@ -108,7 +136,7 @@ class InstaBot:
         self.driver.find_element_by_xpath("//button[contains(text(), 'Next')]").click()
         sleep(4)
         self.driver.find_element_by_xpath("//textarea[@autocomplete=\"off\"]")\
-            .send_keys("Am i not a cute motherfucker? #Pro #Sexy #Followme")
+            .send_keys("Every moment matters." + "\n" + "\n" + hashTagSelector(mySet))
         try:
             self.driver.find_element_by_xpath("//button[contains(text(), 'Teilen')]").click()
         except NoSuchElementException:
@@ -121,18 +149,7 @@ class InstaBot:
         moveFile('posting','finished')
         print("success")
 
-    
+#my_bot = InstaBot('cottagecorefashion', 'Wassermann2001') #not changing
 
-
-my_bot = InstaBot('johamovement', 'mpi91nv')
-
-""" for i in range(378,792):
-    shutil.move(os.path.join('images',f"{i}.png"), '/Users/Hai/Desktop/notProcessed') """
-
-""" moveFile('images','posting')
-sleep(2)
-moveFile('posting', 'finished') """
-
-            
-
+my_bot = InstaBot('johamovement','mpi91nv')
 
