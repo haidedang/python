@@ -76,8 +76,9 @@ class InstaBot:
                 .click()
             sleep(4) 
         except NoSuchElementException:
-            pass """
-        """ try:
+            pass
+        
+        try:
             self.driver.find_element_by_xpath("//button[contains(text(), 'Jetzt nicht')]").click()
         except NoSuchElementException:
             try:
@@ -94,7 +95,7 @@ class InstaBot:
                 pass    
         sleep(4)  
 
-        #### First TIme USage ##### 
+        #### First TIme USage #####
 
         try:
             self.driver.find_element_by_xpath("//button[contains(text(), 'Jetzt nicht')]").click()
