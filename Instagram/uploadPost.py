@@ -53,7 +53,7 @@ class InstaBot:
         self.username = username
         self.driver.get("https://instagram.com")
         sleep(2)
-        try:
+        """ try:
             self.driver.find_element_by_xpath("//button[contains(text(), 'Akzeptieren')]").click()
         except NoSuchElementException:
             try:
@@ -76,8 +76,8 @@ class InstaBot:
                 .click()
             sleep(4) 
         except NoSuchElementException:
-            pass
-        try:
+            pass """
+        """ try:
             self.driver.find_element_by_xpath("//button[contains(text(), 'Jetzt nicht')]").click()
         except NoSuchElementException:
             try:
@@ -92,7 +92,7 @@ class InstaBot:
                 self.driver.find_element_by_xpath("//button[contains(text(), 'Cancel')]").click()
             except NoSuchElementException:
                 pass    
-        sleep(4)  
+        sleep(4)   """
 
         try:
             self.driver.find_element_by_xpath("//button[contains(text(), 'Jetzt nicht')]").click()
@@ -101,9 +101,12 @@ class InstaBot:
                 self.driver.find_element_by_xpath("//button[contains(text(), 'Not Now')]").click()
             except NoSuchElementException:
                 pass
-          
-        self.driver.find_element_by_xpath("//div[@data-testid=\"new-post-button\"]")\
-           .click()
+
+        try:  
+            self.driver.find_element_by_xpath("//div[@data-testid=\"new-post-button\"]")\
+            .click()
+        except NoSuchElementException:
+            pass:
         sleep(4)
 
         pyautogui.FAILSAFE= False
@@ -160,5 +163,5 @@ class InstaBot:
 
 #my_bot = InstaBot('cottagecorefashion', 'Wassermann2001') #not changing
 
-my_bot = InstaBot('johamovement','mpi91nv')
+my_bot = InstaBot('cottagecorefashion','Wassermann2001')
 
