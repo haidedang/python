@@ -7,6 +7,8 @@ import os
 import shutil
 from cv2 import cv2
 import random
+import counter
+import pickle
 
 # from dotenv import load_dotenv
 
@@ -28,7 +30,22 @@ def moveFile(folder, dest):
             shutil.move(os.path.join(folderPath,filename), os.getcwd() + '/' + dest)
             break
 
+def sloganGenerator():
+    # load the counter 
+    obj = counter.loadState('counter.pickle')
+
+    print(slogans[obj.counterSlogan])  
+    instaCaption = slogans[obj.counterSlogan]
+
+    obj.counterSlogan += 1
+
+    counter.saveState(obj)
+
+    return instaCaption
+
+
 hashTags = "#cottagecore #cottagecoreaesthetic #witchy #mushroom #botanicalillustration #tarotcards #cottage #katharsis #cabincore #cabin #aesthetic #flowers #forest #forestlover #ceramics #meadow #nature #lemontree #fruitbasket #naturewitch #moodboard #moodboardaesthetic #naturelovers #retro #vintageaesthetic #retroaesthetic #fairycore #cottagecoreaesthetic #farmcore #grandmacore #countryside #arthoe #plantcore #angelcore #softcore #forestcore #lovecore #forestnymph #softgirl #morikei #warmcore #fairycore #fairycoreaesthetic #faeriecore #honeycore #warmaesthetic #cloudaesthetic #aestheticallypleasing #myaesthetic #cottagecore #cottagecoreaesthetic #cottagecorefashion #cottagecorestyle #vintagedresses #fairyfashion #princessdress #princessdresses #praerigirl #morikei #morigirl #farmcoreaesthetic #farmcore"
+slogans = [ "WEAR or TEAR?", "SHOP or FLOP?", "TAKE or TOSS?", "Rate this outfit from 1-10!", "YAY or NAY?"]
 
 arr = hashTags.split() 
 mySet = list(set(arr))
@@ -150,8 +167,9 @@ class InstaBot:
         sleep(8)
         self.driver.find_element_by_xpath("//button[contains(text(), 'Next')]").click()
         sleep(4)
+        
         self.driver.find_element_by_xpath("//textarea[@autocomplete=\"off\"]")\
-            .send_keys("Every moment matters." + "\n" + "\n" + hashTagSelector(mySet))
+            .send_keys(sloganGenerator() + "\n" + "\n" + hashTagSelector(mySet))
         try:
             self.driver.find_element_by_xpath("//button[contains(text(), 'Teilen')]").click()
         except NoSuchElementException:
@@ -166,5 +184,5 @@ class InstaBot:
 
 #my_bot = InstaBot('cottagecorefashion', 'Wassermann2001') #not changing
 
-my_bot = InstaBot('cottagecorefashion','Wassermann2001')
+# my_bot = InstaBot('cottagecorefashion','Wassermann2001')
 
