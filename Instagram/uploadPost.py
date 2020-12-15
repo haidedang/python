@@ -11,6 +11,7 @@ import random
 # from dotenv import load_dotenv
 
 chrome_options = Options()
+chrome_options.add_argument("user-data-dir=selenium")
 chrome_options.add_argument('--no-sandbox')  
 chrome_options.add_argument('--disable-dev-shm-usage')      
 mobile_emulation = { "deviceName": "iPhone X" }
@@ -62,19 +63,27 @@ class InstaBot:
         try:
             self.driver.find_element_by_xpath("//button[contains(text(), 'Anmelden')]").click()
         except NoSuchElementException:
-            self.driver.find_element_by_xpath("//button[contains(text(), 'Log In')]").click()
-        self.driver.find_element_by_xpath("//input[@name=\"username\"]")\
-            .send_keys(username)
-        self.driver.find_element_by_xpath("//input[@name=\"password\"]")\
-            .send_keys(pw)
-        self.driver.find_element_by_xpath("//button[@type=\"submit\"]")\
-            .click()
-        sleep(4)  
+            try:
+                self.driver.find_element_by_xpath("//button[contains(text(), 'Log In')]").click()
+            except NoSuchElementException:
+                pass
+        try:
+            self.driver.find_element_by_xpath("//input[@name=\"username\"]")\
+                .send_keys(username)
+            self.driver.find_element_by_xpath("//input[@name=\"password\"]")\
+                .send_keys(pw)
+            self.driver.find_element_by_xpath("//button[@type=\"submit\"]")\
+                .click()
+            sleep(4) 
+        except NoSuchElementException:
+            pass
         try:
             self.driver.find_element_by_xpath("//button[contains(text(), 'Jetzt nicht')]").click()
         except NoSuchElementException:
-            self.driver.find_element_by_xpath("//button[contains(text(), 'Not Now')]").click()
-            pass
+            try:
+                self.driver.find_element_by_xpath("//button[contains(text(), 'Not Now')]").click()
+            except NoSuchElementException:
+                pass
         sleep(4)  
         try:
             self.driver.find_element_by_xpath("//button[contains(text(), 'Abbrechen')]").click()
@@ -132,7 +141,7 @@ class InstaBot:
         sleep(2)
         pyautogui.click()
 
-        sleep(2)
+        sleep(4)
         self.driver.find_element_by_xpath("//button[contains(text(), 'Next')]").click()
         sleep(4)
         self.driver.find_element_by_xpath("//textarea[@autocomplete=\"off\"]")\
@@ -144,7 +153,7 @@ class InstaBot:
                 self.driver.find_element_by_xpath("//button[contains(text(), 'Share')]").click()
             except NoSuchElementException:
                 pass
-        sleep(2)
+        sleep(4)
     
         moveFile('posting','finished')
         print("success")
