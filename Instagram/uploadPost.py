@@ -141,7 +141,7 @@ class InstaBot:
         sleep(2)
         pyautogui.click()
 
-        sleep(4)
+        sleep(8)
         self.driver.find_element_by_xpath("//button[contains(text(), 'Next')]").click()
         sleep(4)
         self.driver.find_element_by_xpath("//textarea[@autocomplete=\"off\"]")\
