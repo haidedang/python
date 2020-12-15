@@ -53,7 +53,7 @@ class InstaBot:
         self.username = username
         self.driver.get("https://instagram.com")
         sleep(2)
-        """ try:
+        try:
             self.driver.find_element_by_xpath("//button[contains(text(), 'Akzeptieren')]").click()
         except NoSuchElementException:
             try:
@@ -92,7 +92,9 @@ class InstaBot:
                 self.driver.find_element_by_xpath("//button[contains(text(), 'Cancel')]").click()
             except NoSuchElementException:
                 pass    
-        sleep(4)   """
+        sleep(4)  
+
+        #### First TIme USage ##### 
 
         try:
             self.driver.find_element_by_xpath("//button[contains(text(), 'Jetzt nicht')]").click()
