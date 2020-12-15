@@ -106,7 +106,7 @@ class InstaBot:
             self.driver.find_element_by_xpath("//div[@data-testid=\"new-post-button\"]")\
             .click()
         except NoSuchElementException:
-            pass:
+            pass
         sleep(4)
 
         pyautogui.FAILSAFE= False
