@@ -36,6 +36,110 @@ class Shopify:
     def __init__(self, url, username, pw):
         self.driver = login(self, url, username, pw)
 
+    def openProductInNewTab(self, url):
+        self.driver.execute_script("window.open('','_blank');")
+        sleep(2)
+        self.driver.switch_to.window(self.driver.window_handles[1])
+        self.driver.get(url)
+        sleep(4)
+    
+    def selectTablePicture(self, instance):
+        # contains list of image thumbnails 
+        sleep(4)
+        self.driver.switch_to.window(self.driver.window_handles[1])
+        container = self.driver.find_elements_by_xpath("//div[@class=\"Polaris-DropZone__Container_13mbo\"]/div/div[position()=2]/*")
+        print(container)
+        print(instance.driver.find_elements_by_xpath("//div[@class=\"Polaris-DropZone__Container_13mbo\"]"))
+        
+        # grap second last div and open it 
+        tablePicture = container[-2]
+        tablePicture = tablePicture.find_element_by_xpath('.//button')
+        instance.driver.execute_script("""
+            arguments[0].click()
+        """, tablePicture)
+        sleep(3)
+        
+
+    def addHtmlTable(self):
+        self.selectTablePicture()
+        # download the picture 
+        self.clickButton('Download')
+        self.clickButton('Close')
+
+        # ---- EXTRACT TABLE FROM IMAGE --- 
+        table = extract()
+
+        # ---- INSERT INTO TEXT AREA ----- 
+        textarea = self.driver.find_element_by_xpath('.//iframe[@id=\"product-description_ifr\"]')
+        self.driver.switch_to.frame(textarea)
+        p = self.driver.find_element_by_xpath('//p')
+
+        # Add HTML Table 
+        text = self.driver.execute_script("""
+            // var desc = document.getElementById('product-description')
+            var text = "<p>"+ arguments[1].innerHTML + "</p>" + "<p><strong>Size Chart: </strong></p><br>" + arguments[0]
+            return text
+        """, table, p)
+
+        self.driver.switch_to.window(self.driver.window_handles[1])
+
+        self.driver.execute_script(""" 
+        var button = document.querySelector("[aria-describedby='PolarisTooltipContent15']");
+        button.click()
+        """)
+        sleep(2)
+
+        self.driver.find_element_by_id('product-description').send_keys(Keys.COMMAND + 'a')
+        self.driver.find_element_by_id('product-description').send_keys(text)
+        sleep(2)
+        self.driver.find_element_by_id('product-description').click()
+        sleep(2)
+
+    def checkForTable(self): 
+        textarea = self.driver.find_element_by_xpath('.//iframe[@id=\"product-description_ifr\"]')
+        print('textarea', textarea)
+        self.driver.switch_to.frame(textarea)
+        #check if table exist
+
+        try:
+            self.driver.find_element_by_xpath('//table')
+            print('table', self.driver.find_element_by_xpath('//table') )
+            # if it exists delete the picture 
+            return True
+        except NoSuchElementException:
+            return False
+
+
+    # argument: 'Download' , 'Close', 'Save' or 'Delete' 
+    def clickButton(self, action):
+        # download the picture 
+        button = self.driver.find_element_by_xpath("//button[@aria-label='"+action+"']")
+        self.driver.execute_script("""
+            arguments[0].click()
+        """, button)
+        print(action)
+        sleep(2)
+
+    def executeProduct(self, url, action):
+        # open a new TAB 
+        self.openProductInNewTab(url)            
+
+        # Add HTML Table or delete second picture 
+        action(self)
+
+        # Save the Product 
+        self.driver.execute_script(""" 
+        var button = document.querySelector("[aria-label='Save']");
+        button.click()
+        """)
+        sleep(6)
+
+        self.driver.close()
+
+        self.driver.switch_to.window(self.driver.window_handles[0])
+        sleep(2)
+
+
     def addTables(self): 
         productList = self.driver.find_element_by_xpath("//div[@class=\"Polaris-Page__Content_xd1mk\"]")
         productList = productList.find_elements_by_xpath(".//ul[@class=\"v0Su5 _3jLY9\"]/li")
@@ -46,92 +150,28 @@ class Shopify:
         for product in productList:
 
             href = product.find_element_by_xpath(".//div[@testid=\"ProductTitles\"]/span/a").get_attribute('href')
-            # open a new TAB 
-            self.driver.execute_script("window.open('','_blank');")
-            sleep(2)
-            self.driver.switch_to.window(self.driver.window_handles[1])
+            self.executeProduct(href, self.addHtmlTable)
 
-            self.driver.get(href)
+    def specificTable(self, name, action):
+        product = self.driver.find_element_by_xpath("//a[@aria-label='"+name+"']")
+        print(product.get_attribute('href'))
+        # href = product.find_element_by_xpath(".//div[@testid=\"ProductTitles\"]/span/a").get_attribute('href')
+        url = product.get_attribute('href')
+        self.executeProduct(url, action)
 
-            sleep(4)
+    def deleteTables(self, instance):
+        # Run through all products 
+        # Check if html table exists  
+        if self.checkForTable(): 
+            # if it exists, delete the size table picture 
+            self.selectTablePicture(instance)
+            self.clickButton('Delete')
+            sleep(3)
+            self.driver.find_element_by_xpath('//span[contains(text(), "Delete media")]').click()
+        return
 
-            # contains list of image thumbnails 
-            container = self.driver.find_elements_by_xpath("//div[@class=\"Polaris-DropZone__Container_13mbo\"]/div/div[position()=2]/*")
-            print(container)
-            # grap second last div 
-            tablePicture = container[-2]
-            tablePicture = tablePicture.find_element_by_xpath('.//button')
-            self.driver.execute_script("""
-                arguments[0].click()
-            """, tablePicture)
 
-            sleep(3) 
 
-            downloadButton = self.driver.find_element_by_xpath("//button[@aria-label=\"Download\"]")
-            self.driver.execute_script("""
-                arguments[0].click()
-            """, downloadButton)
-
-            print('downloaded')
-
-            sleep(2)
-
-            closeButton = self.driver.find_element_by_xpath("//button[@aria-label=\"Close\"]")
-            self.driver.execute_script("""
-                arguments[0].click()
-            """, closeButton)
-            print('closed')
-            sleep(2)
-
-            # ---- EXTRACT TABLE FROM IMAGE --- 
-            table = extract()
-
-            #table = "<table><tr><td><p>Size(CM).</p></td><td><p>Length.</p></td><td><p>Bust</p></td><td><p>waist</p></td><td><p>Shoulder</p></td></tr><tr><td><p>S.</p></td><td><p>19.</p></td><td><p>86.</p></td><td><p>68.</p></td><td><p>37</p></td></tr><tr><td><p>M.</p></td><td><p>120.</p></td><td><p>90.</p></td><td><p>72</p></td><td><p>38.</p></td></tr><tr><td><p>L</p></td><td><p>2</p></td><td><p>94.</p></td><td><p>76.</p></td><td><p>39.</p></td></tr><tr><td><p>XL</p></td><td><p>22</p></td><td><p>98.</p></td><td><p>80.</p></td><td><p>40.</p></td></tr></table>"
-
-            # ---- INSERT INTO TEXT AREA ----- 
-            
-           
-            textarea = self.driver.find_element_by_xpath('.//iframe[@id=\"product-description_ifr\"]')
-            
-            self.driver.switch_to.frame(textarea)
-            p = self.driver.find_element_by_xpath('//p')
-
-            text = self.driver.execute_script("""
-                // var desc = document.getElementById('product-description')
-                var text = "<p>"+ arguments[1].innerHTML + "</p>" + "<p><strong>Size Chart: </strong></p><br>" + arguments[0]
-                return text
-            """, table, p)
-
-            self.driver.switch_to.window(self.driver.window_handles[1])
-
-            self.driver.execute_script(""" 
-            var button = document.querySelector("[aria-describedby='PolarisTooltipContent15']");
-            button.click()
-            """)
-            sleep(2)
-
-            self.driver.find_element_by_id('product-description').send_keys(Keys.COMMAND + 'a')
-
-            self.driver.find_element_by_id('product-description').send_keys(text)
-
-            sleep(2)
-            self.driver.find_element_by_id('product-description').click()
-
-            sleep(2)
-
-            self.driver.execute_script(""" 
-            var button = document.querySelector("[aria-label='Save']");
-            button.click()
-            """)
-            sleep(6)
-
-            self.driver.close()
-
-            self.driver.switch_to.window(self.driver.window_handles[0])
-            sleep(2)
-            
 shopify = Shopify('https://cottagecore-outfits.myshopify.com/admin/products?selectedView=all', 'cottagecoreoutfit@gmail.com', 'Wassermann2001')
 sleep(2)
-shopify.addTables()
-
-extract()
+shopify.specificTable('Academia Girl Dress', shopify.deleteTables)
