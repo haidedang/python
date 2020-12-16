@@ -182,7 +182,7 @@ class InstaBot:
         moveFile('posting','finished')
         print("success")
 
-#my_bot = InstaBot('cottagecorefashion', 'Wassermann2001') #not changing
+my_bot = InstaBot('cottagecorefashion', 'Wassermann2001') #not changing
 
 # my_bot = InstaBot('cottagecorefashion','Wassermann2001')
 
