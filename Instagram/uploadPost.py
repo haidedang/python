@@ -13,21 +13,22 @@ import pickle
 # from dotenv import load_dotenv
 
 chrome_options = Options()
-chrome_options.add_argument("user-data-dir=selenium")
+#chrome_options.add_argument("user-data-dir=selenium")
 chrome_options.add_argument('--no-sandbox')  
 chrome_options.add_argument('--disable-dev-shm-usage')      
 mobile_emulation = { "deviceName": "iPhone X" }
 chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
 
 def moveFile(folder, dest):
-    folderPath = os.getcwd()+ '/' + folder
+    folderPath = os.getcwd()+ '/Instagram/' + folder
     print(folderPath)
     for filename in os.listdir(folderPath):
         img = cv2.imread(os.path.join(folderPath,filename))
         if img is not None:
             print(filename)
             # dest = /posting or /finished
-            shutil.move(os.path.join(folderPath,filename), os.getcwd() + '/' + dest)
+            shutil.move(os.path.join(folderPath,filename), os.getcwd() + '/Instagram/' + dest)
+            print(os.path.join(folderPath,filename), os.getcwd() + '/Instagram/' + dest)
             break
 
 def sloganGenerator():
@@ -140,8 +141,8 @@ class InstaBot:
         pyautogui.doubleClick()
         sleep(2)
 
-        #select posting folder 
-        pyautogui.moveTo(217, 154)
+        #select posting folder , delay to the bottom because of pycache
+        pyautogui.moveTo(217, 185)
         sleep(2)
         pyautogui.doubleClick()
         sleep(2)

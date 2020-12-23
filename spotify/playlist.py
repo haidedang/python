@@ -32,10 +32,19 @@ def extract():
 host = "https://cottagecore-outfits.myshopify.com"
 success = {}
 
-class Shopify:
+class Spotify:
 # open Shopify admin All Product view 
     def __init__(self, url, username, pw):
         self.driver = login(self, url, username, pw)
+
+    def makePrivate(self):
+        # find second direct child of playlist
+        playlist = self.driver.find_elements_by_xpath("//div[@aria-label='Public Playlists']/div[position()=2]/*")
+        print(playlist.get_attribute('class'))
+        for item in playlist:
+            item.find_element_by_xpath("//div/div").click()
+        
+
 
     def openProductInNewTab(self, url):
         self.driver.execute_script("window.open('','_blank');")
@@ -56,7 +65,8 @@ class Shopify:
         self.driver.execute_script("""
             arguments[0].click()
         """, tablePicture)
-        sleep(3) 
+        sleep(3)
+        
 
     def addHtmlTable(self, url):
         self.selectTablePicture()
@@ -94,18 +104,6 @@ class Shopify:
         self.driver.find_element_by_id('product-description').click()
         sleep(2)
 
-    def archiveTable(self,url):
-        if self.checkForTable():
-            print('table exists')
-        else:
-            # Archive Product
-            print('nothing')
-            self.driver.switch_to.window(self.driver.window_handles[1])
-            self.driver.find_element_by_xpath('//span[contains(text(), "Archive product")]').click()
-            sleep(2)
-            self.driver.find_element_by_xpath('//button[@class="Polaris-Button_r99lw Polaris-Button--newDesignLanguage_1rik8 Polaris-Button--primary_7k9zs"]/span/span[contains(text(), "Archive product" )]').click()
-            sleep(4)
-
     def checkForTable(self): 
         textarea = self.driver.find_element_by_xpath('.//iframe[@id=\"product-description_ifr\"]')
         print('textarea', textarea)
@@ -119,6 +117,7 @@ class Shopify:
             return True
         except NoSuchElementException:
             return False
+
 
     # argument: 'Download' , 'Close', 'Save' or 'Delete' 
     def clickButton(self, action):
@@ -160,52 +159,17 @@ class Shopify:
        
     def addTables(self):
         # select all entries with active status  
-        self.driver.find_element_by_xpath("//a[@id='archived']").click()
-        sleep(2)
-
-        productList = self.getAllProducts()
-
-        while True:
-            # for all Products do the following 
-            for product in productList:
-
-                href = product.find_element_by_xpath(".//div[@testid=\"ProductTitles\"]/span/a").get_attribute('href')
-                self.executeProduct(href, self.addHtmlTable)
-            sleep(4)
-            self.driver.find_element_by_xpath('//button[@aria-label="Next"]').click()
-            sleep(4)
-
-    def changeVendors(self):
-        self.driver.find_element_by_xpath("//a[@id='all']").click()
-        sleep(2)
-        self.driver.execute_script("""
-            Array.from(document.querySelectorAll('span[class="Polaris-Button__Text_yj3uv"]')).find(el => el.textContent === 'Product vendor').click();
-        """)
-        sleep(2)
-        self.driver.find_element_by_xpath("//span[@class='Polaris-Choice__Label_2vd36' and contains(text(), 'Cottagecore Outfits')]").click()
-        sleep(4)
-        productList = self.getAllProducts()
-        for product in productList:
-                href = product.find_element_by_xpath(".//div[@testid=\"ProductTitles\"]/span/a").get_attribute('href')
-                self.executeProduct(href, self.changeVendor)
-
-    def changeVendor(self, url):
-        inputField = self.driver.find_element_by_xpath("//input[@value='Cottagecore Outfits']")
-        inputField.send_keys(Keys.COMMAND + "a")
-        inputField.send_keys("Cottagely")
-        inputField.send_keys(Keys.RETURN)
-
-       
-    def archiveTables(self):
         self.driver.find_element_by_xpath("//a[@id='active']").click()
         sleep(2)
 
         productList = self.getAllProducts()
+
         # for all Products do the following 
         for product in productList:
+
             href = product.find_element_by_xpath(".//div[@testid=\"ProductTitles\"]/span/a").get_attribute('href')
-            self.executeProduct(href, self.archiveTable)
-            
+            self.executeProduct(href, self.addHtmlTable)
+
     def specificTable(self, name, action):
         product = self.driver.find_element_by_xpath("//a[@aria-label='"+name+"']")
         print(product.get_attribute('href'))
@@ -232,11 +196,11 @@ class Shopify:
             href = product.find_element_by_xpath(".//div[@testid=\"ProductTitles\"]/span/a").get_attribute('href')
             self.executeProduct(href, self.deleteTables)
 
-shopify = Shopify('https://cottagecore-outfits.myshopify.com/admin/products?selectedView=all', 'cottagecoreoutfit@gmail.com', 'Wassermann2001')
-sleep(2)
-# shopify.specificTable('Academia Girl Dress', shopify.deleteTables)
-# shopify.deleteAllTablePictures()
 
-#shopify.specificTable('Angel Dream Dress', shopify.archiveTable)
-#shopify.addTables()
-shopify.changeVendors()
+url = 'https://open.spotify.com/user/11154139047/playlists'
+username = 'cottagecoreoutfit@gmail.com'
+password = 'Wassermann2001'
+
+spotify = Spotify(url, username, password )
+sleep(4)
+spotify.makePrivate()

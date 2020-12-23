@@ -2,6 +2,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from time import sleep
 from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import StaleElementReferenceException
+
 from selenium.webdriver.common.keys import Keys
 import pyautogui
 import os
@@ -20,6 +22,16 @@ chrome_options = Options()
 shopifyImages = {}
 
 i=0 
+
+defaultObject= {
+    "season": '',
+    "neckline": '',
+    "style": '',
+    "patternType": '',
+    "dressesLength": ''
+}
+
+page = 2 
 
 class Oberlo:
     def __init__(self, url, username, pw):
@@ -63,35 +75,73 @@ class Oberlo:
             materials = text.find_elements_by_xpath('.//strong[contains(text(), "Material:")]')
             print(materials)
 
+            try:
+                season = text.find_element_by_xpath('.//strong[contains(text(), "Season:")]')
+            except (NoSuchElementException, StaleElementReferenceException) :
+                season = defaultObject["season"]
+            try:
+                neckline = text.find_element_by_xpath('.//strong[contains(text(), "Neckline:")]')
+            except (NoSuchElementException, StaleElementReferenceException) :
+                print('ERROR NO NECKLINE')
+                neckline = defaultObject["neckline"]
+            try:
+                style = text.find_element_by_xpath('.//strong[contains(text(), "Style:")]')
+            except (NoSuchElementException, StaleElementReferenceException) :
+                style = defaultObject["style"]
+            try:
+                patternType = text.find_element_by_xpath('.//strong[contains(text(), "Pattern Type:")]')
+            except (NoSuchElementException, StaleElementReferenceException) :
+                patternType = defaultObject["patternType"]
+            try:
+                dressesLength = text.find_element_by_xpath('.//strong[contains(text(), "Dresses Length:")]')
+            except (NoSuchElementException, StaleElementReferenceException) :
+                dressesLength = defaultObject["dressesLength"]
+            
+            global i 
+            if i==0:
+                defaultObject["season"] = season
+                defaultObject["neckline"] = neckline
+                defaultObject["style"] = style
+                defaultObject["patternType"] = patternType
+                defaultObject["dressesLength"] = dressesLength
+
             textarea = self.driver.find_element_by_xpath('//body[@id=\"tinymce\"]')
 
-            self.driver.execute_script("""
-                //create overall tag 
-                var p = document.createElement('p')
+            try:
+                self.driver.execute_script("""
+                    //create overall tag 
+                    var overallTag = document.createElement('p')
 
-                // for each material do that the following 
+                    var createTag = function (tag, strongText) {
+                        var textNode = document.createTextNode(strongText.nextSibling.textContent)
+                        var br = document.createElement("br");
+                        // append to p tag 
+                        tag.appendChild(strongText)
+                        tag.appendChild(textNode)
+                        tag.appendChild(br)
+                        return tag 
+                    }
 
-                arguments[0].forEach((material) => {
-                    // create a Material Tag 
-                    var materialTag = document.createElement("STRONG")
-                    var materialText= document.createTextNode("Material: ")
-                    materialTag.appendChild(materialText)
+                    // for each material do that the following 
 
-                    var textNode = document.createTextNode(material.nextSibling.textContent)
-                    var br = document.createElement("br");
-                    // append to p tag 
-                    p.appendChild(material)
-                    p.appendChild(textNode)
-                    p.appendChild(br)
-                })
+                    arguments[0].forEach((material) => {
+                        overallTag = createTag(overallTag, material)
+                    })
 
-                var element = arguments[2]
-                element.parentNode.removeChild(element)
+                    overallTag = createTag(overallTag, arguments[3])
+                    overallTag = createTag(overallTag, arguments[4])
+                    overallTag = createTag(overallTag, arguments[5])
+                    overallTag = createTag(overallTag, arguments[6])
+                    overallTag = createTag(overallTag, arguments[7])
+                
+                    var element = arguments[2]
+                    element.parentNode.removeChild(element)
 
-                arguments[1].appendChild(p)
-
-                                        
-                """, materials, textarea, text)
+                    arguments[1].appendChild(overallTag)
+                                            
+                    """, materials, textarea, text, season, neckline, style, patternType, dressesLength)
+            except (NoSuchElementException, StaleElementReferenceException):
+                pass
 
             textarea = self.driver.find_element_by_xpath('//body[@id=\"tinymce\"]').click()
             sleep(2)
@@ -134,9 +184,24 @@ class Oberlo:
             product.find_element_by_xpath('.//div[@class=\"product-image__overlay\"]').click() """
 
             sleep(2)
-
+            i += 1
             #Import to Store
             # product.find_element_by_xpath('.//button[@class=\"push-to-shop btn btn-primary btn-regular\"]').click()
+
+    def runAllPages(self):
+        global page
+        while True:
+            page += 1 
+            number = str(page)
+            try:
+                self.driver.find_element_by_xpath("//button[@class='btn btn-basic btn-regular']/span/span[contains(text(), '"+number+"')]").click()
+            except NoSuchElementException:
+                print('No pages left')
+                break
+            sleep(4)
+            self.fillProduct()
+            sleep(2)
+
 
 def fetchImagesFromWebsite():
     # check wether product is from Perfect Stranger 
@@ -223,7 +288,5 @@ def fetchImagesFromWebsite():
 
 oberlo = Oberlo('https://app.oberlo.com/import', 'cottagecoreoutfit@gmail.com', 'Wassermann2001')
 sleep(4)
-oberlo.fillProduct()
-        
-        
-
+#oberlo.fillProduct()
+oberlo.runAllPages()
