@@ -1,6 +1,6 @@
 import glob
 import os
-import table_ocr.demo.main
+#import table_ocr.demo.main
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from time import sleep
@@ -11,8 +11,10 @@ import shutil
 from cv2 import cv2
 import random
 import sys
-# sys.path.append('/home/seluser/python/utils')
-sys.path.append('/Users/Hai/github/python/utils')
+sys.path.append('/home/seluser/Instagram/utils')
+import pickle
+#sys.path.append('/Users/Hai/github/python/utils')
+
 from util import login
 import pickle
 
@@ -31,6 +33,7 @@ def extract():
 
 host = "https://cottagecore-outfits.myshopify.com"
 success = {}
+dressNames = []
 
 class Shopify:
 # open Shopify admin All Product view 
@@ -44,14 +47,14 @@ class Shopify:
         self.driver.get(url)
         sleep(4)
     
-    def selectTablePicture(self):
+    def selectTablePicture(self, number):
         # contains list of image thumbnails 
         sleep(4)
         self.driver.switch_to.window(self.driver.window_handles[1])
         container = self.driver.find_elements_by_xpath("//div[@class=\"Polaris-DropZone__Container_13mbo\"]/div/div[position()=2]/*")
         print(container)        
         # grap second last div and open it 
-        tablePicture = container[-2]
+        tablePicture = container[number]
         tablePicture = tablePicture.find_element_by_xpath('.//button')
         self.driver.execute_script("""
             arguments[0].click()
@@ -59,7 +62,7 @@ class Shopify:
         sleep(3) 
 
     def addHtmlTable(self, url):
-        self.selectTablePicture()
+        self.selectTablePicture(-2)
         # download the picture 
         self.clickButton('Download')
         self.clickButton('Close')
@@ -175,6 +178,34 @@ class Shopify:
             self.driver.find_element_by_xpath('//button[@aria-label="Next"]').click()
             sleep(4)
 
+    def downloadPictures(self): 
+        self.driver.find_element_by_xpath("//a[@id='all']").click()
+        sleep(2)
+        while True:
+            self.driver.find_element_by_xpath('//button[@aria-label="Next"]').click()
+            sleep(3)
+            productList = self.getAllProducts()
+            for product in productList:
+                    href = product.find_element_by_xpath(".//div[@testid=\"ProductTitles\"]/span/a").get_attribute('href')
+                    self.executeProduct(href, self.downloadPicture)
+            # write array to file 
+            result = { "names": dressNames }
+            print('adding to array', result)
+            with open(os.getcwd()+  '/names.pickle', 'wb') as handle:
+                pickle.dump(result, handle, protocol= pickle.HIGHEST_PROTOCOL)
+            
+
+    def downloadPicture(self, url):
+        #save name to array 
+        name = self.driver.find_element_by_xpath('//div[@class="Polaris-Header-Title_2qj8j"]/h1').text
+        dressNames.append(name)
+        print(dressNames)
+        #select first picture
+        self.selectTablePicture(0)
+        # download the picture 
+        self.clickButton('Download')
+        self.clickButton('Close')
+
     def changeVendors(self):
         self.driver.find_element_by_xpath("//a[@id='all']").click()
         sleep(2)
@@ -232,6 +263,21 @@ class Shopify:
             href = product.find_element_by_xpath(".//div[@testid=\"ProductTitles\"]/span/a").get_attribute('href')
             self.executeProduct(href, self.deleteTables)
 
+    
+    def test(self): 
+        arr = {"names": ["Hans", "Zocker", "Coolio"]}
+        with open(os.getcwd()+  '/names.pickle', 'wb') as handle:
+            pickle.dump(arr, handle, protocol= pickle.HIGHEST_PROTOCOL)
+        print('LOADING')
+        print(os.getcwd())
+        sleep(2)
+        with open(os.getcwd() + '/names.pickle', 'rb') as handle:
+            obj = pickle.load(handle)
+            print(obj)
+        
+        
+
+
 shopify = Shopify('https://cottagecore-outfits.myshopify.com/admin/products?selectedView=all', 'cottagecoreoutfit@gmail.com', 'Wassermann2001')
 sleep(2)
 # shopify.specificTable('Academia Girl Dress', shopify.deleteTables)
@@ -239,4 +285,6 @@ sleep(2)
 
 #shopify.specificTable('Angel Dream Dress', shopify.archiveTable)
 #shopify.addTables()
-shopify.changeVendors()
+# shopify.changeVendors()
+#shopify.test()
+shopify.downloadPictures()
