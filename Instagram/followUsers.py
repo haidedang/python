@@ -52,7 +52,7 @@ def sloganGenerator():
 hashTags = "#cottagecore #cottagecoreaesthetic #witchy #mushroom #botanicalillustration #tarotcards #cottage #katharsis #cabincore #aesthetic #flowers #forest #forestlover #ceramics #meadow #nature #lemontree #fruitbasket #naturewitch #moodboard #moodboardaesthetic #naturelovers #retro #vintageaesthetic #retroaesthetic #fairycore #cottagecoreaesthetic #farmcore #grandmacore #countryside #arthoe #plantcore #angelcore #softcore #forestcore #lovecore #forestnymph #softgirl #morikei #warmcore #fairycore #fairycoreaesthetic #faeriecore #honeycore #warmaesthetic #cloudaesthetic #aestheticallypleasing #myaesthetic #cottagecore #cottagecoreaesthetic #cottagecorefashion #cottagecorestyle #vintagedresses #fairyfashion #princessdress #princessdresses #praerigirl #morikei #morigirl #farmcoreaesthetic #farmcore"
 essentialHashTags= "#cottagecore #cottagecoreaesthetic #cottage #aesthetic #moodboardaesthetic #vintageaesthetic #cottagecore #cottagecoreaesthetic #cottagecorefashion #cottagecorestyle #vintagedresses #fairyfashion #princessdress #princessdresses #praerigirl #morikei #morigirl #farmcoreaesthetic #farmcore"
 slogans = [ "WEAR or TEAR?", "SHOP or FLOP?", "TAKE or TOSS?", "Rate this outfit from 1-10!", "YAY or NAY?"]
-comments = ["Amazing.", "So lovely <3", "I love this", "Wow <3" ]
+comments = ["Amazing :)", "So lovely <3", "I love this", "Wow <3", "Just georgous", "what a wonderful post <3", "so amazing o.o" ]
 
 prev_user_list = []
 
@@ -199,7 +199,9 @@ class InstaBot:
 
     def followUsers(self): 
         i=0 
-        for hashtag in essentialHashTags:
+        n=0
+        while n<2:
+            hashtag = random.choice(essentialHashTags)
             hashtag = hashtag[1:]
             print(hashtag)
             self.driver.get('https://www.instagram.com/explore/tags/'+ hashtag + '/')
@@ -240,7 +242,8 @@ class InstaBot:
                 sleep(1)
                 new_height = self.driver.execute_script("return arguments[0].scrollHeight", container)
                 i +=1
-                if i==15:
+                if i==5:
+                    i= 0
                     break
                 if new_height == last_height:
                     break
@@ -291,7 +294,7 @@ class InstaBot:
                     print(NoSuchElementException)
                     pass
                 self.driver.close()
-            break
+            n+=1
       
 my_bot = InstaBot('cottagecorefashion', 'Wassermann2001') #not changing
 my_bot.followUsers()
