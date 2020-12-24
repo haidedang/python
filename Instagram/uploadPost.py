@@ -156,10 +156,13 @@ class InstaBot:
         #move first file of folder images to posting folder
         moveFile('images','posting')
         
+        #pyautogui.displayMousePosition()
+
         #select Instagram folder 
-        pyautogui.moveTo(200, 105)
+       # pyautogui.moveTo(200, 105)
+        pyautogui.moveTo(65, 200)
         sleep(2)
-        pyautogui.doubleClick()
+        pyautogui.click()
         sleep(2)
 
         #select posting folder , delay to the bottom because of pycache
@@ -203,6 +206,7 @@ class InstaBot:
     
         moveFile('posting','finished')
         print("success")   
+        sleep(4)
         self.driver.close() 
 
    
