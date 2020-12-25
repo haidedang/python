@@ -269,7 +269,7 @@ class InstaBot:
                     sleep(1)
                     new_height = self.driver.execute_script("return arguments[0].scrollHeight", container)
                     i +=1
-                    if i==2:
+                    if i==1:
                         i= 0
                         break
                     if new_height == last_height:

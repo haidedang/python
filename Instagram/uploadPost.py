@@ -48,7 +48,6 @@ def moveFile(folder, dest):
             print(os.path.join(folderPath,filename), os.getcwd() + '/' + dest)
             break
 
-
 def sloganGenerator():
     # load the counter 
     obj = counter.loadState('counter.pickle')
