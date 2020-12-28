@@ -13,11 +13,13 @@ import pickle
 from random import randint
 import pandas as pd
 import usersDB
+import images
 
 # from dotenv import load_dotenv
 
 chrome_options = Options()
 chrome_options.add_argument("user-data-dir=selenium")
+chrome_options.add_argument("--start-maximized")
 chrome_options.add_argument('--no-sandbox')  
 chrome_options.add_argument('--disable-dev-shm-usage')      
 mobile_emulation = { "deviceName": "iPhone X" }
@@ -65,7 +67,7 @@ def sloganGenerator():
 hashTags = "#cottagecore #cottagecoreaesthetic #witchy #mushroom #botanicalillustration #tarotcards #cottage #katharsis #cabincore #aesthetic #flowers #forest #forestlover #ceramics #meadow #nature #lemontree #fruitbasket #naturewitch #moodboard #moodboardaesthetic #naturelovers #retro #vintageaesthetic #retroaesthetic #fairycore #cottagecoreaesthetic #farmcore #grandmacore #countryside #arthoe #plantcore #angelcore #softcore #forestcore #lovecore #forestnymph #softgirl #morikei #warmcore #fairycore #fairycoreaesthetic #faeriecore #honeycore #warmaesthetic #cloudaesthetic #aestheticallypleasing #myaesthetic #cottagecore #cottagecoreaesthetic #cottagecorefashion #cottagecorestyle #vintagedresses #fairyfashion #princessdress #princessdresses #praerigirl #morikei #morigirl #farmcoreaesthetic #farmcore"
 essentialHashTags= "#cottagecore #cottagecoreaesthetic #cottage #aesthetic #moodboardaesthetic #vintageaesthetic #cottagecore #cottagecoreaesthetic #cottagecorefashion #cottagecorestyle #vintagedresses #fairyfashion #princessdress #princessdresses #praerigirl #morikei #morigirl #farmcoreaesthetic #farmcore"
 slogans = [ "WEAR or TEAR?", "SHOP or FLOP?", "TAKE or TOSS?", "Rate this outfit from 1-10!", "YAY or NAY?"]
-referall= "To shop this dress, click on link in Bio! <3"
+referall= "Click on link in Bio to shop this dress! <3"
 comments = ["Amazing.", "So lovely <3", "I love this", "Wow <3" ]
 
 
@@ -150,25 +152,76 @@ class InstaBot:
             pass
         sleep(4)
 
+        #move first file of folder images to posting folder
+        #moveFile('images','posting')
+        pictureList = images.loadState()
+        folderPath = os.getcwd()+ '/images' 
+        while True:
+            myList = list(pictureList.keys())
+            random.shuffle(myList)
+            print('list of keys', myList)
+            fileName = random.choice(myList)
+            print('randomFileName', fileName)
+            if(pictureList[fileName]==True):
+                print('picture has already been posted')
+                continue
+            print('old name ', fileName)
+            newFileName= '0'+fileName
+            print('new Name', newFileName)
+            os.rename(os.path.join(folderPath,fileName), os.path.join(folderPath,newFileName))
+            # posting it 
+            self.post()
+            # rename back for autogui since always selecting first element
+            os.rename(os.path.join(folderPath,newFileName), os.path.join(folderPath,fileName))
+            pictureList[fileName] = True   
+            images.saveState(pictureList) 
+            print('selecting picture and setting to True', fileName, pictureList)
+            # picture has been posted and save back -> exit loop
+            break
+
+        self.driver.find_element_by_xpath("//button[contains(text(), 'Next')]").click()
+        sleep(4)
+        
+        self.driver.find_element_by_xpath("//textarea[@autocomplete=\"off\"]")\
+            .send_keys(sloganGenerator() + "\n" + "\n" + referall + "\n" + "\n" + hashTagSelector(mySet))
+        try:
+            self.driver.find_element_by_xpath("//button[contains(text(), 'Teilen')]").click()
+        except NoSuchElementException:
+            try: 
+                self.driver.find_element_by_xpath("//button[contains(text(), 'Share')]").click()
+            except NoSuchElementException:
+                pass
+        sleep(4)
+        # moveFile('posting','finished')
+        print("success")   
+        sleep(4)
+       # self.driver.close() 
+    
+    def post(self):
         pyautogui.FAILSAFE= False
 
-        #move first file of folder images to posting folder
-        moveFile('images','posting')
-        
-        #pyautogui.displayMousePosition()
+        # pyautogui.displayMousePosition()
 
         #select Instagram folder 
        # pyautogui.moveTo(200, 105)
-        pyautogui.moveTo(65, 200)
+        pyautogui.moveTo(65, 161)
         sleep(2)
         pyautogui.click()
         sleep(2)
 
+        #
+        # (214,106)
+
         #select posting folder , delay to the bottom because of pycache
-        pyautogui.moveTo(217, 155)
+        """ pyautogui.moveTo(217, 155)
         sleep(2)
         pyautogui.doubleClick()
+        sleep(2) """
+
+        #select File 
+        pyautogui.moveTo(200, 105)
         sleep(2)
+        pyautogui.doubleClick()
 
         # show file extensions
         pyautogui.moveTo(1056, 772)
@@ -189,26 +242,6 @@ class InstaBot:
         pyautogui.click()
 
         sleep(8)
-        self.driver.find_element_by_xpath("//button[contains(text(), 'Next')]").click()
-        sleep(4)
-        
-        self.driver.find_element_by_xpath("//textarea[@autocomplete=\"off\"]")\
-            .send_keys(sloganGenerator() + "\n" + "\n" + referall + "\n" + "\n" + hashTagSelector(mySet))
-        try:
-            self.driver.find_element_by_xpath("//button[contains(text(), 'Teilen')]").click()
-        except NoSuchElementException:
-            try: 
-                self.driver.find_element_by_xpath("//button[contains(text(), 'Share')]").click()
-            except NoSuchElementException:
-                pass
-        sleep(4)
-    
-        moveFile('posting','finished')
-        print("success")   
-        sleep(4)
-        self.driver.close() 
-
-   
       
 my_bot = InstaBot('cottagecorefashion', 'Wassermann2001') #not changing
 #my_bot.followUsers()
