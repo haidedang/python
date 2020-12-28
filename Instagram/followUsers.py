@@ -423,7 +423,7 @@ class InstaBot:
         print('length of userDB', len(randomList))
         random.shuffle(randomList)
         selected = []
-        for k in range(0,50):
+        for k in range(0,2):
             selected.append(random.choice(randomList))
         print('random selected users', selected)
         for k in selected:
@@ -446,10 +446,9 @@ class InstaBot:
             try:
                 self.driver.find_element_by_xpath('//article[@class="ySN3v"]/div/div/div/div/a/div').click()
                 sleep(2)
-            except NoSuchElementException:
-                print(NoSuchElementException)
+            except:
+                print('error', 'weird stuff going on')
                 pass
-            
             try:
                 #like picture 
                 self.driver.execute_script("""
