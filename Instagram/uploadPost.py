@@ -11,7 +11,6 @@ import random
 import counter
 import pickle
 from random import randint
-import pandas as pd
 import usersDB
 import images
 
