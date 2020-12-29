@@ -423,7 +423,7 @@ class InstaBot:
         print('length of userDB', len(randomList))
         random.shuffle(randomList)
         selected = []
-        for k in range(0,2):
+        for k in range(0,50):
             selected.append(random.choice(randomList))
         print('random selected users', selected)
         for k in selected:
