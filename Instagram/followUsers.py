@@ -423,7 +423,7 @@ class InstaBot:
         print('length of userDB', len(randomList))
         random.shuffle(randomList)
         selected = []
-        for k in range(0,2):
+        for k in range(0,50):
             selected.append(random.choice(randomList))
         print('random selected users', selected)
         for k in selected:
@@ -480,7 +480,7 @@ class InstaBot:
         print([k for k,v in users.items() if v == True])
         print(selected)
            
-my_bot = InstaBot('cottagecorefashion', 'Wassermann2001') #not changing
+my_bot = InstaBot('cottagecorefashion', 'wassermann2001') #not changing
 my_bot.commentAndLike()
 # my_bot.scrape()
 
