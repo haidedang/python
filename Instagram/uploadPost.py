@@ -154,7 +154,7 @@ class InstaBot:
         #move first file of folder images to posting folder
         #moveFile('images','posting')
         pictureList = images.loadState()
-        folderPath = os.getcwd()+ '/images' 
+        folderPath = os.getcwd()+ '/0images' 
         while True:
             myList = list(pictureList.keys())
             random.shuffle(myList)
