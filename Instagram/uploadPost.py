@@ -242,6 +242,6 @@ class InstaBot:
 
         sleep(8)
       
-my_bot = InstaBot('cottagecorefashion', 'Wassermann2001') #not changing
+my_bot = InstaBot('cottagecorefashion', 'wassermann2001') #not changing
 #my_bot.followUsers()
 
