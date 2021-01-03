@@ -13,7 +13,6 @@ import pickle
 from random import randint
 import usersDB
 import images
-
 # from dotenv import load_dotenv
 
 chrome_options = Options()
@@ -52,14 +51,10 @@ def moveFile(folder, dest):
 def sloganGenerator():
     # load the counter 
     obj = counter.loadState('counter.pickle')
-
     print(slogans[obj.counterSlogan])  
     instaCaption = slogans[obj.counterSlogan]
-
     obj.counterSlogan += 1
-
     counter.saveState(obj)
-
     return instaCaption
 
 
@@ -144,12 +139,7 @@ class InstaBot:
             except NoSuchElementException:
                 pass
     
-        try:  
-            self.driver.find_element_by_xpath("//div[@data-testid=\"new-post-button\"]")\
-            .click()
-        except NoSuchElementException:
-            pass
-        sleep(4)
+        
 
         #move first file of folder images to posting folder
         #moveFile('images','posting')
@@ -158,7 +148,7 @@ class InstaBot:
         while True:
             myList = list(pictureList.keys())
             random.shuffle(myList)
-            print('list of keys', myList)
+            # print('list of keys', myList)
             fileName = random.choice(myList)
             print('randomFileName', fileName)
             if(pictureList[fileName]==True):
@@ -169,12 +159,18 @@ class InstaBot:
             print('new Name', newFileName)
             os.rename(os.path.join(folderPath,fileName), os.path.join(folderPath,newFileName))
             # posting it 
-            self.post()
+            if newFileName[0] == "0":
+                print('pyautogui processing')
+                self.post()
+            else:
+                continue
             # rename back for autogui since always selecting first element
+            print('renaming back')
             os.rename(os.path.join(folderPath,newFileName), os.path.join(folderPath,fileName))
+            print(fileName)
             pictureList[fileName] = True   
             images.saveState(pictureList) 
-            print('selecting picture and setting to True', fileName, pictureList)
+            print('selecting picture and setting to True', fileName, pictureList[fileName])
             # picture has been posted and save back -> exit loop
             break
 
@@ -197,9 +193,24 @@ class InstaBot:
        # self.driver.close() 
     
     def post(self):
+        try:  
+            self.driver.find_element_by_xpath("//div[@data-testid=\"new-post-button\"]")\
+            .click()
+        except NoSuchElementException:
+            pass
+        sleep(4)
+
         pyautogui.FAILSAFE= False
 
         # pyautogui.displayMousePosition()
+
+        # show file extensions
+        pyautogui.moveTo(1056, 772)
+        sleep(2)
+        pyautogui.click()
+        pyautogui.moveTo(1039, 805)
+        sleep(2)
+        pyautogui.click()
 
         #select Instagram folder 
        # pyautogui.moveTo(200, 105)
@@ -222,13 +233,7 @@ class InstaBot:
         sleep(2)
         pyautogui.doubleClick()
 
-        # show file extensions
-        pyautogui.moveTo(1056, 772)
-        sleep(2)
-        pyautogui.click()
-        pyautogui.moveTo(1039, 805)
-        sleep(2)
-        pyautogui.click()
+        
         
         #select File 
         pyautogui.moveTo(200, 105)
