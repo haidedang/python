@@ -139,8 +139,6 @@ class InstaBot:
             except NoSuchElementException:
                 pass
     
-        
-
         #move first file of folder images to posting folder
         #moveFile('images','posting')
         pictureList = images.loadState()
@@ -233,8 +231,6 @@ class InstaBot:
         sleep(2)
         pyautogui.doubleClick()
 
-        
-        
         #select File 
         pyautogui.moveTo(200, 105)
         sleep(2)

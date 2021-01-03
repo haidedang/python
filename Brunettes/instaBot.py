@@ -11,17 +11,39 @@ import random
 import pickle
 from random import randint
 import usersDB
-from bs4 import BeautifulSoup
-import requests
+import urllib.request
 
 
 # from dotenv import load_dotenv
 
 chrome_options = Options()
 chrome_options.add_argument("user-data-dir=selenium")
+chrome_options.add_argument("--start-maximized")
 chrome_options.add_argument('--no-sandbox')  
 chrome_options.add_argument('--disable-dev-shm-usage')      
+mobile_emulation = { "deviceName": "iPhone X" }
+chrome_options.add_experimental_option("mobileEmulation", mobile_emulation)
 
+hashTags="#nfp #finest #babeswithcurves #babesofinstagram #babesofinstagram #fitnessmotivation #fitness #fitnessgirl #beautifulgirl #brunettegirl #brunette #beautifulbrunette #beauty #beautiful #gorgeous #pretty #hot #classy #elegant #stylish #brunette #girl #lady #makeup #fashion #potd #ootd #hairstyle #outfit #pose #bubbles #2021  #newyear #eyes #lips #black #looks #instagirl #sensual #stunning" 
+slogans = [ "WEAR or TEAR?", "SHOP or FLOP?", "TAKE or TOSS?", "Rate this outfit from 1-10!", "YAY or NAY?"]
+referall= "Click on link in Bio to shop this dress! <3"
+comments = ["Amazing.", "So lovely <3", "I love this", "Wow <3" ]
+slogan= "like or nah?"
+
+
+arr = hashTags.split() 
+mySet = list(set(arr))
+
+
+def hashTagSelector(hashtags):
+    result= []
+    for i in range(0,20):
+        element = random.choice(hashtags)
+        if element not in result:
+            result.append(element)
+            #print(result)
+    return " ".join(result)
+  
 
 posts = {}
 users = {}
@@ -476,18 +498,116 @@ class InstaBot:
         print([k for k,v in users.items() if v == True])
         print(selected)
 
-driver = webdriver.Chrome(options=chrome_options)
+    def uploadPost(self):
+        posts = usersDB.loadState('uploaded.pickle')
+        babes = list(posts.keys())
+        i= 0 
+        for babe in babes:
+            try:
+                i += 1
+                print(posts[babe]["iteration"])
+                print('babe has already been uploaded')
+                continue
+            except:
+                print('new Babe uploading...')
+                post = list(posts[babe].keys())[0]
+                print(post)
+                image = posts[babe][post]["src"]
+                urllib.request.urlretrieve(image, os.getcwd()+ f"/0images/0.png")
+                self.post()
+                posts[babe]["iteration"] = 0 
+
+                print('delete again')
+                os.remove(os.getcwd()+'/0images/0.png')
+                usersDB.saveState(posts, 'uploaded.pickle')
+                break
+    
+
+    def post(self):
+        try:  
+            self.driver.find_element_by_xpath("//div[@data-testid=\"new-post-button\"]")\
+            .click()
+        except NoSuchElementException:
+            pass
+        sleep(4)
+
+        pyautogui.FAILSAFE= False
+
+        # pyautogui.displayMousePosition()
+
+        # show file extensions
+        pyautogui.moveTo(1056, 772)
+        sleep(2)
+        pyautogui.click()
+        pyautogui.moveTo(1039, 805)
+        sleep(2)
+        pyautogui.click()
+
+        #select Instagram folder 
+        # pyautogui.moveTo(200, 105)
+        pyautogui.moveTo(65, 161)
+        sleep(2)
+        pyautogui.click()
+        sleep(2)
+
+        #
+        # (214,106)
+
+        #select posting folder , delay to the bottom because of pycache
+        """ pyautogui.moveTo(217, 155)
+        sleep(2)
+        pyautogui.doubleClick()
+        sleep(2) """
+
+        #select File 
+        pyautogui.moveTo(200, 105)
+        sleep(2)
+        pyautogui.doubleClick()
+
+        #select File 
+        pyautogui.moveTo(200, 105)
+        sleep(2)
+        pyautogui.click()
+
+        #open File
+        pyautogui.moveTo(1084, 826)
+        sleep(2)
+        pyautogui.click()
+
+        sleep(4)
+
+        self.driver.find_element_by_xpath("//button[contains(text(), 'Next')]").click()
+        sleep(4)
+        
+        self.driver.find_element_by_xpath("//textarea[@autocomplete=\"off\"]")\
+            .send_keys(slogan + "\n" + "\n" + "\n" + "\n" + hashTagSelector(mySet))
+        try:
+            self.driver.find_element_by_xpath("//button[contains(text(), 'Teilen')]").click()
+        except NoSuchElementException:
+            try: 
+                self.driver.find_element_by_xpath("//button[contains(text(), 'Share')]").click()
+            except NoSuchElementException:
+                pass
+        sleep(4)
+        # moveFile('posting','finished')
+        print("success")   
+        sleep(4)
+       # self.driver.close() 
 
 def test():
     babes = usersDB.loadState('babes.pickle')
     babeArr = list(babes.keys())
+    print ('RESULT LÄNGE', len(babeArr))
     print(babeArr.index('https://www.instagram.com/juuleechkaa/'))
-    print(babes[babeArr[31]])
+    print(babes[babeArr[87]])
     posting= {}
     print('POSTED', list(posting.keys()))
     print(len(list(posting.keys())))
-    try:
-        for babe in babeArr:
+    n=0
+    for babe in babeArr:
+        try:
+            n +=1
+            print(n)
             pictures= list(babes[babe].keys())
             likesArr = []
             obj= {}
@@ -503,24 +623,27 @@ def test():
                 babes[babe][obj[likesArr[i]]]["passed"]=True
                 posting[babe][obj[likesArr[i]]]=False
                 # print(babes[babe][obj[likesArr[i]]]["passed"])
-                #print('babes sucessfully selected')
+                print('babes sucessfully selected')
+                usersDB.saveState(posting, 'postingBabes.pickle')
                 #
-    except:
-        posting.pop(list(posting.keys())[-1], None)
-        print(len(babeArr))
-        print(list(posting.keys()))
-        print(len(list(posting.keys())))
-        usersDB.saveState(posting, 'postingBabes.pickle')
-        # usersDB.saveState(posting, 'postingBabes.pickle')
+            print(posting)
+            """ posting.pop(list(posting.keys())[-1], None)
+            print(len(babeArr))
+            print(list(posting.keys()))
+            print(len(list(posting.keys()))) """
+            #usersDB.saveState(posting, 'postingBabes.pickle')
+            # usersDB.saveState(posting, 'postingBabes.pickle')
+        except:
+            continue
 
 def addPictureSrc():
     babes = usersDB.loadState('postingBabes.pickle')
     babeArr = list(babes.keys())
-    posting = usersDB.loadState('posts.pickle')
+    """ posting = usersDB.loadState('posts.pickle')
     for elem in list(posting.keys()):
             babeArr.remove(elem)
     # babes = list(posting.keys())
-    print('startValue', babes)
+    print('startValue', babes) """
     for babe in babeArr: 
         posts =  list(babes[babe].keys())
         for post in posts:
@@ -531,26 +654,37 @@ def addPictureSrc():
             except:
                 babes[babe][post] = {}
                 print('enter loop')
-                driver.get(post)
-                sleep(2)
-                src= driver.execute_script("""
-                    return document.getElementsByClassName("_97aPb ")[0].querySelector('img').src
-                """)
-                babes[babe][post]["posted"]= False
-                babes[babe][post]["src"] = src
-                # print(posting[babe])
-                print(babes)
-                # usersDB.saveState(posting,'posts.pickle') 
-            
+                try:
+                    driver.get(post)
+                    sleep(2)
+                    src= driver.execute_script("""
+                        return document.getElementsByClassName("_97aPb ")[0].querySelector('img').src
+                    """)
+                    babes[babe][post]["posted"]= False
+                    babes[babe][post]["src"] = src
+                    # print(posting[babe])
+                    print(babes[babe][post])
+                    # urllib.request.urlretrieve(src, os.getcwd()+ f"/images/{post}.png")
+                    usersDB.saveState(babes,'posts.pickle') 
+                    print('SAVED')
+                except:
+                    continue
 
-# my_bot = InstaBot('hot__brunettes', 'Wassermann2001') #not changing
+
+
+
+
+
+my_bot = InstaBot('hot__brunettes', 'Wassermann2001') #not changing
 #my_bot.scrape('___brunettes___')
 # my_bot.scrape()
 # my_bot.findQualityPicture()
 # my_bot.getLikesFromAll()
 # test()
-addPictureSrc()
+# addPictureSrc()
+#urllib.request.urlretrieve("https://instagram.ftxl2-1.fna.fbcdn.net/v/t51.2885-15/e35/p1080x1080/135374127_679134179449175_8815434748395577046_n.jpg?_nc_ht=instagram.ftxl2-1.fna.fbcdn.net&_nc_cat=111&_nc_ohc=J-kWr0NQ4yAAX_UnAvK&tp=1&oh=c0cbc1275915e422ccd73bc560e1dc02&oe=601B1CA9", os.getcwd()+ f"/images/1.png")
 #print(usersDB.loadState('babes.pickle'))
 
 
 
+my_bot.uploadPost()
