@@ -11,6 +11,8 @@ import random
 import pickle
 from random import randint
 import usersDB
+from bs4 import BeautifulSoup
+import requests
 
 
 # from dotenv import load_dotenv
@@ -398,6 +400,9 @@ class InstaBot:
     def getLikesFromAll(self):
         babes = usersDB.loadState('babes.pickle')
         babeArr = list(babes.keys())
+        posting = usersDB.loadState('postingBabes.pickle')
+        for elem in list(posting.keys()):
+                babeArr.remove(elem)
         for babe in babeArr:
             pictures= list(babes[babe].keys())
             for picture in pictures:
@@ -407,31 +412,7 @@ class InstaBot:
                     babes[babe][picture]["likes"] = likes 
                     usersDB.saveState(babes, 'babes.pickle')
                     print('saved babe in DB', babes[babe])
-                    
-            
-    def test(self):
-        babes = usersDB.loadState('babes.pickle')
-        babeArr = list(babes.keys())
-        for babe in babeArr:
-            pictures= list(babes[babe].keys())
-            likesArr = []
-            obj= {}
-            posting= {babe : {
-            }}
-            for picture in pictures:
-                    # get all likes 
-                    likes = babes[babe][picture]["likes"]
-                    likesArr.append(likes)
-                    obj[likes] = picture 
-            likesArr.sort(reverse=True)
-            print(likesArr)
-            for i in range(3):
-               babes[babe][obj[likesArr[i]]]["passed"]=True
-               posting[babe][obj[likesArr[i]]]=False
-               print(babes[babe][obj[likesArr[i]]]["passed"])
-               print('babes sucessfully selected')
-            print(posting)
-         
+                          
     def commentAndLike(self):
         # users = usersDB.loadState('userHQ.pickle')
         randomList = [k for k,v in users.items() if v == False]
@@ -494,14 +475,81 @@ class InstaBot:
             self.driver.close()
         print([k for k,v in users.items() if v == True])
         print(selected)
-           
-my_bot = InstaBot('hot__brunettes', 'Wassermann2001') #not changing
+
+driver = webdriver.Chrome(options=chrome_options)
+
+def test():
+    babes = usersDB.loadState('babes.pickle')
+    babeArr = list(babes.keys())
+    print(babeArr.index('https://www.instagram.com/juuleechkaa/'))
+    print(babes[babeArr[31]])
+    posting= {}
+    print('POSTED', list(posting.keys()))
+    print(len(list(posting.keys())))
+    try:
+        for babe in babeArr:
+            pictures= list(babes[babe].keys())
+            likesArr = []
+            obj= {}
+            posting[babe]={}
+            for picture in pictures:
+                    # get all likes 
+                    likes = babes[babe][picture]["likes"]
+                    likesArr.append(likes)
+                    obj[likes] = picture 
+            likesArr.sort(reverse=True)
+            #print(likesArr)
+            for i in range(3):
+                babes[babe][obj[likesArr[i]]]["passed"]=True
+                posting[babe][obj[likesArr[i]]]=False
+                # print(babes[babe][obj[likesArr[i]]]["passed"])
+                #print('babes sucessfully selected')
+                #
+    except:
+        posting.pop(list(posting.keys())[-1], None)
+        print(len(babeArr))
+        print(list(posting.keys()))
+        print(len(list(posting.keys())))
+        usersDB.saveState(posting, 'postingBabes.pickle')
+        # usersDB.saveState(posting, 'postingBabes.pickle')
+
+def addPictureSrc():
+    babes = usersDB.loadState('postingBabes.pickle')
+    babeArr = list(babes.keys())
+    posting = usersDB.loadState('posts.pickle')
+    for elem in list(posting.keys()):
+            babeArr.remove(elem)
+    # babes = list(posting.keys())
+    print('startValue', babes)
+    for babe in babeArr: 
+        posts =  list(babes[babe].keys())
+        for post in posts:
+            try:
+                print(babes[babe][post]["src"])
+                print('already downloaded')
+                break
+            except:
+                babes[babe][post] = {}
+                print('enter loop')
+                driver.get(post)
+                sleep(2)
+                src= driver.execute_script("""
+                    return document.getElementsByClassName("_97aPb ")[0].querySelector('img').src
+                """)
+                babes[babe][post]["posted"]= False
+                babes[babe][post]["src"] = src
+                # print(posting[babe])
+                print(babes)
+                # usersDB.saveState(posting,'posts.pickle') 
+            
+
+# my_bot = InstaBot('hot__brunettes', 'Wassermann2001') #not changing
 #my_bot.scrape('___brunettes___')
 # my_bot.scrape()
 # my_bot.findQualityPicture()
-my_bot.getLikesFromAll()
-# my_bot.test()
-
+# my_bot.getLikesFromAll()
+# test()
+addPictureSrc()
 #print(usersDB.loadState('babes.pickle'))
 
 
