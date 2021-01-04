@@ -670,11 +670,6 @@ def addPictureSrc():
                 except:
                     continue
 
-
-
-
-
-
 my_bot = InstaBot('hot__brunettes', 'Wassermann2001') #not changing
 #my_bot.scrape('___brunettes___')
 # my_bot.scrape()
