@@ -1,17 +1,15 @@
-[2460:2477:0104/093145.795110:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
-[2460:2489:0104/093145.824972:ERROR:bus.cc(393)] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
-[2460:2489:0104/093145.825014:ERROR:bus.cc(393)] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
-[2460:2489:0104/093145.836457:ERROR:bus.cc(393)] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
-[2460:2489:0104/093145.836529:ERROR:bus.cc(393)] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
-[2460:2511:0104/093145.901990:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
-[2460:2511:0104/093145.902039:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
-[2460:2511:0104/093145.902089:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
-[2460:2511:0104/093145.902101:WARNING:property.cc(144)] DaemonVersion: GetAndBlock: failed.
-[2460:2511:0104/093145.902127:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
-[2460:2511:0104/093145.902151:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
-[2488:2488:0104/093145.995648:ERROR:sandbox_linux.cc(374)] InitializeSandbox() called with multiple threads in process gpu-process.
-[2460:2460:0104/093151.387225:INFO:CONSOLE(0)] "The resource https://www.instagram.com/graphql/query/?query_hash=24a36f49b32dea22e33c2e6e35bad4d3&variables=%7B%22only_stories%22%3Atrue%2C%22stories_prefetch%22%3Atrue%2C%22stories_video_dash_manifest%22%3Afalse%7D was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.", source: https://www.instagram.com/ (0)
-[2488:2540:0104/093227.990377:ERROR:latency_info.cc(150)] CompositorFrameSinkSupport::MaybeSubmitCompositorFrame, LatencyInfo vector size 167 is too big.
-[2460:2460:0104/093303.049661:INFO:CONSOLE(0)] "The resource https://www.instagram.com/graphql/query/?query_hash=24a36f49b32dea22e33c2e6e35bad4d3&variables=%7B%22only_stories%22%3Atrue%2C%22stories_prefetch%22%3Atrue%2C%22stories_video_dash_manifest%22%3Afalse%7D was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.", source: https://www.instagram.com/ (0)
-[2460:2460:0104/093316.366619:INFO:CONSOLE(0)] "The resource https://www.instagram.com/graphql/query/?query_hash=24a36f49b32dea22e33c2e6e35bad4d3&variables=%7B%22only_stories%22%3Atrue%2C%22stories_prefetch%22%3Atrue%2C%22stories_video_dash_manifest%22%3Afalse%7D was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.", source: https://www.instagram.com/ (0)
-[2460:2460:0104/093332.669515:WARNING:pref_notifier_impl.cc(40)] Pref observer for media_router.cast_allow_all_ips found at shutdown.
+[3172:3189:0104/181003.186028:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
+[3172:3199:0104/181003.208808:ERROR:bus.cc(393)] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[3172:3199:0104/181003.208846:ERROR:bus.cc(393)] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[3172:3199:0104/181003.237563:ERROR:bus.cc(393)] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[3172:3199:0104/181003.237595:ERROR:bus.cc(393)] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
+[3172:3230:0104/181003.292086:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
+[3172:3230:0104/181003.292145:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
+[3172:3230:0104/181003.292229:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
+[3172:3230:0104/181003.298844:WARNING:property.cc(144)] DaemonVersion: GetAndBlock: failed.
+[3172:3230:0104/181003.298901:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
+[3172:3230:0104/181003.298929:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
+[3202:3202:0104/181003.367701:ERROR:sandbox_linux.cc(374)] InitializeSandbox() called with multiple threads in process gpu-process.
+[3172:3172:0104/181009.637326:INFO:CONSOLE(0)] "The resource https://www.instagram.com/graphql/query/?query_hash=24a36f49b32dea22e33c2e6e35bad4d3&variables=%7B%22only_stories%22%3Atrue%2C%22stories_prefetch%22%3Atrue%2C%22stories_video_dash_manifest%22%3Afalse%7D was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.", source: https://www.instagram.com/ (0)
+[3202:3250:0104/181046.173920:ERROR:latency_info.cc(150)] CompositorFrameSinkSupport::MaybeSubmitCompositorFrame, LatencyInfo vector size 181 is too big.
+[3172:3172:0104/181054.393639:WARNING:zygote_communication_linux.cc(286)] Error reading message from zygote: Connection reset by peer (104)
