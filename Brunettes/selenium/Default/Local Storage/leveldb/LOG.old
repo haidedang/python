@@ -1,3 +1,6 @@
-2021/01/04-16:10:03.240 b2a Reusing MANIFEST /home/seluser/Brunettes/selenium/Default/Local Storage/leveldb/MANIFEST-000001
-2021/01/04-16:10:03.240 b2a Recovering log #3
-2021/01/04-16:10:03.240 b2a Reusing old log /home/seluser/Brunettes/selenium/Default/Local Storage/leveldb/000003.log 
+2021/01/04-21:34:50.406 7bd Reusing MANIFEST /home/seluser/python/Brunettes/selenium/Default/Local Storage/leveldb/MANIFEST-000001
+2021/01/04-21:34:50.406 7bd Recovering log #357
+2021/01/04-21:34:50.407 7bd Reusing old log /home/seluser/python/Brunettes/selenium/Default/Local Storage/leveldb/000357.log 
+2021/01/04-21:40:53.650 7d0 Level-0 table #360: started
+2021/01/04-21:40:53.659 7d0 Level-0 table #360: 8272 bytes OK
+2021/01/04-21:40:53.668 7d0 Delete type=0 #357

@@ -1,15 +1,21 @@
-[3172:3189:0104/181003.186028:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
-[3172:3199:0104/181003.208808:ERROR:bus.cc(393)] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
-[3172:3199:0104/181003.208846:ERROR:bus.cc(393)] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
-[3172:3199:0104/181003.237563:ERROR:bus.cc(393)] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
-[3172:3199:0104/181003.237595:ERROR:bus.cc(393)] Failed to connect to the bus: Could not parse server address: Unknown address type (examples of valid types are "tcp" and on UNIX "unix")
-[3172:3230:0104/181003.292086:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
-[3172:3230:0104/181003.292145:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
-[3172:3230:0104/181003.292229:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
-[3172:3230:0104/181003.298844:WARNING:property.cc(144)] DaemonVersion: GetAndBlock: failed.
-[3172:3230:0104/181003.298901:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
-[3172:3230:0104/181003.298929:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
-[3202:3202:0104/181003.367701:ERROR:sandbox_linux.cc(374)] InitializeSandbox() called with multiple threads in process gpu-process.
-[3172:3172:0104/181009.637326:INFO:CONSOLE(0)] "The resource https://www.instagram.com/graphql/query/?query_hash=24a36f49b32dea22e33c2e6e35bad4d3&variables=%7B%22only_stories%22%3Atrue%2C%22stories_prefetch%22%3Atrue%2C%22stories_video_dash_manifest%22%3Afalse%7D was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.", source: https://www.instagram.com/ (0)
-[3202:3250:0104/181046.173920:ERROR:latency_info.cc(150)] CompositorFrameSinkSupport::MaybeSubmitCompositorFrame, LatencyInfo vector size 181 is too big.
-[3172:3172:0104/181054.393639:WARNING:zygote_communication_linux.cc(286)] Error reading message from zygote: Connection reset by peer (104)
+[2412:2430:0104/221003.569612:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
+[2412:2441:0104/221003.611585:ERROR:bus.cc(393)] Failed to connect to the bus: Address does not contain a colon
+[2412:2441:0104/221003.611782:ERROR:bus.cc(393)] Failed to connect to the bus: Address does not contain a colon
+[2412:2441:0104/221003.637814:ERROR:bus.cc(393)] Failed to connect to the bus: Address does not contain a colon
+[2412:2441:0104/221003.637963:ERROR:bus.cc(393)] Failed to connect to the bus: Address does not contain a colon
+[2412:2489:0104/221003.768685:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
+[2412:2489:0104/221003.768943:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
+[2412:2489:0104/221003.769159:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
+[2412:2489:0104/221003.769255:WARNING:property.cc(144)] DaemonVersion: GetAndBlock: failed.
+[2412:2489:0104/221003.769403:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
+[2412:2489:0104/221003.769582:ERROR:bus.cc(393)] Failed to connect to the bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
+[2439:2439:0104/221003.910174:ERROR:sandbox_linux.cc(374)] InitializeSandbox() called with multiple threads in process gpu-process.
+[2412:2445:0104/221008.322994:ERROR:data_store_impl.cc(131)] Failed to open Data Reduction Proxy DB: 3
+[2412:2412:0104/221012.866844:INFO:CONSOLE(0)] "The resource https://www.instagram.com/graphql/query/?query_hash=24a36f49b32dea22e33c2e6e35bad4d3&variables=%7B%22only_stories%22%3Atrue%2C%22stories_prefetch%22%3Atrue%2C%22stories_video_dash_manifest%22%3Afalse%7D was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.", source: https://www.instagram.com/ (0)
+[2763:2763:0104/221222.523017:WARNING:audio_manager_linux.cc(68)] Falling back to ALSA for audio output. PulseAudio is not available or could not be initialized.
+[2412:2441:0104/221222.587575:ERROR:bus.cc(393)] Failed to connect to the bus: Address does not contain a colon
+[2412:2441:0104/221222.587713:ERROR:bus.cc(393)] Failed to connect to the bus: Address does not contain a colon
+[2412:2441:0104/221222.587787:ERROR:bus.cc(393)] Failed to connect to the bus: Address does not contain a colon
+[2443:2461:0104/221232.947348:WARNING:sqlite_persistent_store_backend_base.cc(171)] Failed to post task from FlushAndNotifyInBackground@../../net/extras/sqlite/sqlite_persistent_store_backend_base.cc:220 to client_task_runner_.
+[2443:2461:0104/221232.947656:WARNING:sqlite_persistent_store_backend_base.cc(171)] Failed to post task from FlushAndNotifyInBackground@../../net/extras/sqlite/sqlite_persistent_store_backend_base.cc:220 to client_task_runner_.
+[2412:2412:0104/221232.965212:WARNING:pref_notifier_impl.cc(40)] Pref observer for media_router.cast_allow_all_ips found at shutdown.
