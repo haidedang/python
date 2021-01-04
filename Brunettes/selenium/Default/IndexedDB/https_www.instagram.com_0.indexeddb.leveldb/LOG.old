@@ -1,0 +1,15 @@
+2021/01/04-09:32:59.400 9ce Reusing MANIFEST /home/seluser/Brunettes/selenium/Default/IndexedDB/https_www.instagram.com_0.indexeddb.leveldb/MANIFEST-000001
+2021/01/04-09:32:59.400 9ce Recovering log #4
+2021/01/04-09:32:59.400 9ce Reusing old log /home/seluser/Brunettes/selenium/Default/IndexedDB/https_www.instagram.com_0.indexeddb.leveldb/000004.log 
+2021/01/04-09:33:10.848 9cc Level-0 table #8: started
+2021/01/04-09:33:10.850 9cc Level-0 table #8: 67977 bytes OK
+2021/01/04-09:33:10.850 9cc Delete type=0 #4
+2021/01/04-09:33:10.850 9cc Manual compaction at level-0 from (begin) .. (end); will stop at (end)
+2021/01/04-09:33:10.850 9cc Manual compaction at level-1 from (begin) .. (end); will stop at '\x00\x01\x01\x02\x01\x0e\x00u\x00s\x00e\x00r\x00s\x00.\x00v\x00i\x00e\x00w\x00e\x00r\x00I\x00d' @ 1348 : 1
+2021/01/04-09:33:10.850 9cc Compacting 1@1 + 1@2 files
+2021/01/04-09:33:10.852 9cc Generated table #9@1: 53 keys, 32652 bytes
+2021/01/04-09:33:10.852 9cc Compacted 1@1 + 1@2 files => 32652 bytes
+2021/01/04-09:33:10.853 9cc compacted to: files[ 0 0 1 0 0 0 0 ]
+2021/01/04-09:33:10.853 9cc Delete type=2 #5
+2021/01/04-09:33:10.853 9cc Delete type=2 #8
+2021/01/04-09:33:10.853 9cc Manual compaction at level-1 from '\x00\x01\x01\x02\x01\x0e\x00u\x00s\x00e\x00r\x00s\x00.\x00v\x00i\x00e\x00w\x00e\x00r\x00I\x00d' @ 1348 : 1 .. (end); will stop at (end)
