@@ -762,5 +762,5 @@ my_bot = InstaBot('hot__brunettes', 'Wassermann2001') #not changing
 
 
 
-# my_bot.uploadPost()
-my_bot.scrapeUsers()
+my_bot.uploadPost()
+# my_bot.scrapeUsers()
