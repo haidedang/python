@@ -164,14 +164,7 @@ class InstaBot:
                 except:
                     print('error', 'weird stuff going on')
                     pass
-                try:
-                    #like picture 
-                    self.driver.execute_script("""
-                        document.querySelector('svg[aria-label="Like"]').parentNode.click()
-                    """)
-                    # write a comment 
-                except:
-                    pass
+                self.likePicture()
                 try:
                     self.driver.find_element_by_xpath('//textarea[@class="Ypffh"]').click()
                 except NoSuchElementException:
@@ -180,7 +173,7 @@ class InstaBot:
                     usersDB.saveState(users, 'userHQ.pickle')
                     pass
                 sleep(2)
-                try:
+                """ try:
                     self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(random.choice(comments))
                     sleep(2)
                     self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(Keys.RETURN)
@@ -191,7 +184,7 @@ class InstaBot:
                     n += 1
                 except NoSuchElementException: 
                     print(NoSuchElementException)
-                    pass
+                    pass """
                 self.driver.close()
             else:
                 print('limit of public comments reached. Exit')
@@ -219,6 +212,16 @@ class InstaBot:
             following[str(today)].append(user)
         print('saving new followers...')
         usersDB.saveState(following, 'following.pickle')
+    
+    def likePicture(self):
+        try:
+            #like picture 
+            self.driver.execute_script("""
+                document.querySelector('svg[aria-label="Like"]').parentNode.click()
+            """)
+            # write a comment 
+        except:
+            pass
 
     def scrapeUsers(self):
         users = usersDB.loadState('userHQ.pickle')
@@ -302,4 +305,4 @@ class InstaBot:
 
 my_bot = InstaBot('hot__brunettes', 'Wassermann2001') #not changing
 
-my_bot.commentAndLike(40,10)
+my_bot.commentAndLike(20,10)
