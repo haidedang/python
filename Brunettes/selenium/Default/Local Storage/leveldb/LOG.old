@@ -1,6 +1,17 @@
-2021/01/04-21:34:50.406 7bd Reusing MANIFEST /home/seluser/python/Brunettes/selenium/Default/Local Storage/leveldb/MANIFEST-000001
-2021/01/04-21:34:50.406 7bd Recovering log #357
-2021/01/04-21:34:50.407 7bd Reusing old log /home/seluser/python/Brunettes/selenium/Default/Local Storage/leveldb/000357.log 
-2021/01/04-21:40:53.650 7d0 Level-0 table #360: started
-2021/01/04-21:40:53.659 7d0 Level-0 table #360: 8272 bytes OK
-2021/01/04-21:40:53.668 7d0 Delete type=0 #357
+2021/01/05-09:30:02.525 144a Reusing MANIFEST /home/seluser/python/Brunettes/selenium/Default/Local Storage/leveldb/MANIFEST-000001
+2021/01/05-09:30:02.525 144a Recovering log #14
+2021/01/05-09:30:02.526 144a Level-0 table #17: started
+2021/01/05-09:30:02.527 144a Level-0 table #17: 7872 bytes OK
+2021/01/05-09:30:02.528 144a Delete type=0 #14
+2021/01/05-09:30:02.528 1445 Compacting 4@0 + 1@1 files
+2021/01/05-09:30:02.533 1445 Generated table #19@0: 3703 keys, 36060 bytes
+2021/01/05-09:30:02.533 1445 Compacted 4@0 + 1@1 files => 36060 bytes
+2021/01/05-09:30:02.534 1445 compacted to: files[ 0 1 1 0 0 0 0 ]
+2021/01/05-09:30:02.534 1445 Delete type=2 #10
+2021/01/05-09:30:02.534 1445 Delete type=2 #12
+2021/01/05-09:30:02.534 1445 Delete type=2 #7
+2021/01/05-09:30:02.534 1445 Delete type=2 #17
+2021/01/05-09:30:02.534 1445 Delete type=2 #15
+2021/01/05-09:40:05.068 1456 Level-0 table #21: started
+2021/01/05-09:40:05.070 1456 Level-0 table #21: 8017 bytes OK
+2021/01/05-09:40:05.070 1456 Delete type=0 #18

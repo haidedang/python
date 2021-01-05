@@ -1,10 +1,13 @@
-2021/01/04-22:10:07.111 98f Reusing MANIFEST /home/seluser/python/Brunettes/selenium/Default/IndexedDB/https_www.instagram.com_0.indexeddb.leveldb/MANIFEST-000001
-2021/01/04-22:10:07.112 98f Recovering log #209
-2021/01/04-22:10:07.114 98f Reusing old log /home/seluser/python/Brunettes/selenium/Default/IndexedDB/https_www.instagram.com_0.indexeddb.leveldb/000209.log 
-2021/01/04-22:11:40.255 993 Compacting 2@0 + 1@1 files
-2021/01/04-22:11:40.284 993 Generated table #212@0: 3885 keys, 47553 bytes
-2021/01/04-22:11:40.284 993 Compacted 2@0 + 1@1 files => 47553 bytes
-2021/01/04-22:11:40.287 993 compacted to: files[ 0 1 1 0 0 0 0 ]
-2021/01/04-22:11:40.288 993 Delete type=2 #206
-2021/01/04-22:11:40.288 993 Delete type=2 #208
-2021/01/04-22:11:40.288 993 Delete type=2 #210
+2021/01/05-12:30:06.036 1606 Reusing MANIFEST /home/seluser/python/Brunettes/selenium/Default/IndexedDB/https_www.instagram.com_0.indexeddb.leveldb/MANIFEST-000001
+2021/01/05-12:30:06.036 1606 Recovering log #50
+2021/01/05-12:30:06.049 1606 Reusing old log /home/seluser/python/Brunettes/selenium/Default/IndexedDB/https_www.instagram.com_0.indexeddb.leveldb/000050.log 
+2021/01/05-12:31:15.789 160d Level-0 table #54: started
+2021/01/05-12:31:15.807 160d Level-0 table #54: 1528526 bytes OK
+2021/01/05-12:31:15.811 160d Delete type=0 #50
+2021/01/05-12:32:51.746 160d Compacting 2@0 + 1@1 files
+2021/01/05-12:32:51.768 160d Generated table #55@0: 8824 keys, 126601 bytes
+2021/01/05-12:32:51.768 160d Compacted 2@0 + 1@1 files => 126601 bytes
+2021/01/05-12:32:51.769 160d compacted to: files[ 0 1 1 0 0 0 0 ]
+2021/01/05-12:32:51.769 160d Delete type=2 #54
+2021/01/05-12:32:51.769 160d Delete type=2 #49
+2021/01/05-12:32:51.769 160d Delete type=2 #51
