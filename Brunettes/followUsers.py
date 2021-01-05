@@ -12,7 +12,8 @@ import pickle
 from random import randint
 import usersDB
 import urllib.request
-
+from datetime import date
+import datetime
 
 # from dotenv import load_dotenv
 
@@ -24,7 +25,7 @@ chrome_options.add_argument('--disable-dev-shm-usage')
 hashTags="#nfp #finest #babeswithcurves #babesofinstagram #babesofinstagram #fitnessmotivation #fitness #fitnessgirl #beautifulgirl #brunettegirl #brunette #beautifulbrunette #beauty #beautiful #gorgeous #pretty #hot #classy #elegant #stylish #brunette #girl #lady #makeup #fashion #potd #ootd #hairstyle #outfit #pose #bubbles #2021  #newyear #eyes #lips #black #looks #instagirl #sensual #stunning" 
 slogans = [ "WEAR or TEAR?", "SHOP or FLOP?", "TAKE or TOSS?", "Rate this outfit from 1-10!", "YAY or NAY?"]
 referall= "Click on link in Bio to shop this dress! <3"
-comments = ["Amazing.", "So lovely <3", "I love this", "Wow <3", "this is awesome"]
+comments = ["Amazing.", "So lovely <3", "I love this", "Wow <3", "this is awesome", "simply beautiful <3", "lovely post"]
 slogan= "like or nah?"
 
 highQualityPictures = {
@@ -47,7 +48,6 @@ def hashTagSelector(hashtags):
             #print(result)
     return " ".join(result)
   
-
 posts = {}
 users = {}
         
@@ -109,68 +109,116 @@ class InstaBot:
             except NoSuchElementException:
                 pass
                       
-    def commentAndLike(self):
+    def commentAndLike(self, comment, follow):
         users = usersDB.loadState('userHQ.pickle')
         randomList = [k for k,v in users.items() if v == False]
         print('length of userDB', len(randomList))
         random.shuffle(randomList)
         selected = []
-        for k in range(0,50):
+        for k in range(0,400):
             selected.append(random.choice(randomList))
         print('random selected users', selected)
-        for k in selected:
-            print('processing userList', len(selected))
-            if users[k]== "PRIVATE":
-                print('useraccount is private')
-                continue
-            if users[k]== True:
-                print('user has already been commented')
-                continue
-            print(k)
-            self.driver.switch_to.window(self.driver.window_handles[0])
-            sleep(7)
-            self.driver.execute_script("window.open('','_blank');")
-            sleep(2)
-            self.driver.switch_to.window(self.driver.window_handles[1])
-            sleep(2)
-            self.driver.get("https://instagram.com/" + k + '/')
-            sleep(2)
-            try:
-                self.driver.find_element_by_xpath('//article[@class="ySN3v"]/div/div/div/div/a/div').click()
+        n = 0
+        # x = number followers
+        x = 0 
+        for k in selected: 
+            print('number of users liked, commented, and followed', n)
+            if n < comment:
+                if users[k]== "PRIVATE":
+                    print('useraccount is private')
+                    continue
+                if users[k]== True:
+                    print('user has already been commented')
+                    continue
+                print(k)
+                self.driver.switch_to.window(self.driver.window_handles[0])
+                sleep(7)
+                self.driver.execute_script("window.open('','_blank');")
                 sleep(2)
-            except:
-                print('error', 'weird stuff going on')
-                pass
-            try:
-                #like picture 
-                self.driver.execute_script("""
-                    document.querySelector('svg[aria-label="Like"]').parentNode.click()
-                """)
-                # write a comment 
-            except:
-                pass
-            try:
-                self.driver.find_element_by_xpath('//textarea[@class="Ypffh"]').click()
-            except NoSuchElementException:
-                print("This account is private. Flagging as private")
-                users[k] = "PRIVATE"
-                usersDB.saveState(users, 'userHQ.pickle')
-                pass
-            sleep(2)
-            try:
-                self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(random.choice(comments))
+                self.driver.switch_to.window(self.driver.window_handles[1])
                 sleep(2)
-                self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(Keys.RETURN)
-                sleep(4)
-                print('commented and liked sucessfully')
-                users[k] = True
-                usersDB.saveState(users, 'userHQ.pickle')
-            except NoSuchElementException: 
-                print(NoSuchElementException)
-                pass
-            self.driver.close()
-        print([k for k,v in users.items() if v == True])
-        print(selected)
+                self.driver.get("https://instagram.com/" + k + '/')
+                sleep(2)
+                try: 
+                    print('detect private or public profile')
+                    firstPic = self.driver.find_element_by_xpath('//article[@class="ySN3v"]/div/div/div/div/a/div')
+                    print('number of users followed', x)
+                    if (x < follow):
+                        print('following User')
+                        followButton = self.driver.execute_script("""
+                            return document.getElementsByClassName('BY3EC')[0].children[0] 
+                        """)
+                        followButton.click()
+                        sleep(2)
+                        self.followUser(k)
+                        x += 1
+                        # followUser
+                    else:
+                        print('limit followers reached')
+                except:
+                    print('account cannot be followed')
+                    pass
+                try:
+                    self.driver.find_element_by_xpath('//article[@class="ySN3v"]/div/div/div/div/a/div').click()
+                    sleep(2)
+                except:
+                    print('error', 'weird stuff going on')
+                    pass
+                try:
+                    #like picture 
+                    self.driver.execute_script("""
+                        document.querySelector('svg[aria-label="Like"]').parentNode.click()
+                    """)
+                    # write a comment 
+                except:
+                    pass
+                try:
+                    self.driver.find_element_by_xpath('//textarea[@class="Ypffh"]').click()
+                except NoSuchElementException:
+                    print("This account is private. Flagging as private")
+                    users[k] = "PRIVATE"
+                    usersDB.saveState(users, 'userHQ.pickle')
+                    pass
+                sleep(2)
+                try:
+                    self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(random.choice(comments))
+                    sleep(2)
+                    self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(Keys.RETURN)
+                    sleep(4)
+                    print('commented and liked sucessfully')
+                    users[k] = True
+                    usersDB.saveState(users, 'userHQ.pickle')
+                    n += 1
+                except NoSuchElementException: 
+                    print(NoSuchElementException)
+                    pass
+                self.driver.close()
+            else:
+                print('limit of public comments reached. Exit')
+                break
+            print([k for k,v in users.items() if v == True])
+            # print(selected)
+
+    def followUser(self, user): 
+        print('click Follow button of user')
+    
+        # load userList 
+        following = usersDB.loadState('following.pickle')
+
+        # following is false and empty object in first iteration
+        today = datetime.date.today() 
+
+        # check the object wether elements for this date exist 
+        try:
+            print('accessing date and show length', len(following[str(today)]))
+            following[str(today)].append(user)
+        except: 
+            # if not existent, init empty array for that day
+            print('first user of today. Init new array and save user')
+            following[str(today)] = []
+            following[str(today)].append(user)
+        print('saving new followers...')
+        usersDB.saveState(following, 'following.pickle')
 
     def scrapeUsers(self):
         users = usersDB.loadState('userHQ.pickle')
@@ -254,4 +302,4 @@ class InstaBot:
 
 my_bot = InstaBot('hot__brunettes', 'Wassermann2001') #not changing
 
-my_bot.commentAndLike()
+my_bot.commentAndLike(40,10)
