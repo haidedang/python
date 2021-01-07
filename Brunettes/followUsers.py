@@ -122,7 +122,7 @@ class InstaBot:
         # x = number followers
         x = 0 
         for k in selected: 
-            print('number of users liked, commented, and followed', n)
+            print('number of users liked, commented, and followed', x)
             if n < comment:
                 if users[k]== "PRIVATE":
                     print('useraccount is private')
