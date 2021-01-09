@@ -1,0 +1,7 @@
+DISPLAY=:99.0
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+
+30,35,40 17 * * * cd /home/seluser/python/Brunettes && python3 instaBot.py >> /tmp/test3.txt 2>&1 && pkill chrome
+0 * * * * pkill chrome
+

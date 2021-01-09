@@ -1,0 +1,6 @@
+DISPLAY=:99.0
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+10 1,5,10,15,20 * * * cd /home/seluser/Instagram && python3 followUsers.py >> /tmp/testFinal.txt 2>&1 && pkill chrome
+13 17,22 * * * cd /home/seluser/Instagram && python3 uploadPost.py >> /tmp/test3.txt 2>&1 && pkill chrome
+0 * * * * pkill chrome
