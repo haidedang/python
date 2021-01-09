@@ -28,10 +28,11 @@ defaultObject= {
     "neckline": '',
     "style": '',
     "patternType": '',
-    "dressesLength": ''
+    "dressesLength": '',
+    "metalsType": ''
 }
 
-page = 2 
+page = 1
 
 class Oberlo:
     def __init__(self, url, username, pw):
@@ -188,20 +189,147 @@ class Oberlo:
             #Import to Store
             # product.find_element_by_xpath('.//button[@class=\"push-to-shop btn btn-primary btn-regular\"]').click()
 
-    def runAllPages(self):
+    def runAllPages(self, action):
         global page
         while True:
+            sleep(4)
+            # self.fillProduct()
+            action()
+            sleep(2)
             page += 1 
             number = str(page)
+            sleep(2)
+            print(number)
             try:
                 self.driver.find_element_by_xpath("//button[@class='btn btn-basic btn-regular']/span/span[contains(text(), '"+number+"')]").click()
             except NoSuchElementException:
                 print('No pages left')
                 break
-            sleep(4)
-            self.fillProduct()
+    
+    def editProduct(self):
+        # change title 
+        #products = self.driver.find_elements_by_css_selector("div.import-products")
+
+        # Find all products from page 
+        products = self.driver.find_element_by_xpath("//div[@class=\"import-products\"]")
+        productList = products.find_elements_by_xpath("//div[@class=\"panel import-product\"]")
+        
+        # loop through each product and edit every product 
+        for product in productList: 
+        ## product Tab 
+            sleep(2)
+            # --DESCRIPTION ----
+            product.find_element_by_xpath('.//span[contains(text(), "Description")]').click()
             sleep(2)
 
+            # create Material Text 
+            textarea = product.find_element_by_xpath('.//iframe[@class=\"tox-edit-area__iframe\"]')
+            
+            self.driver.switch_to.frame(textarea)
+            text = self.driver.find_element_by_xpath('//p')
+            print(text)
+
+            # find materials 
+            materials = text.find_elements_by_xpath('.//strong[contains(text(), "Material:")]')
+            print(materials)
+
+            
+            try:
+                metalsType = text.find_element_by_xpath('.//strong[contains(text(), "Metals Type:")]')
+            except (NoSuchElementException, StaleElementReferenceException) :
+                metalsType = defaultObject["metalsType"]
+            
+            global i 
+            if i==0:
+                defaultObject["metalsType"] = metalsType
+             
+
+            textarea = self.driver.find_element_by_xpath('//body[@id=\"tinymce\"]')
+
+            try:
+                self.driver.execute_script("""
+                    //create overall tag 
+                    var overallTag = document.createElement('p')
+
+                    var createTag = function (tag, strongText) {
+                        var textNode = document.createTextNode(strongText.nextSibling.textContent)
+                        var br = document.createElement("br");
+                        // append to p tag 
+                        tag.appendChild(strongText)
+                        tag.appendChild(textNode)
+                        tag.appendChild(br)
+                        return tag 
+                    }
+
+                    // for each material do that the following 
+
+                    arguments[0].forEach((material) => {
+                        overallTag = createTag(overallTag, material)
+                    })
+
+                    overallTag = createTag(overallTag, arguments[3])
+                
+                    var element = arguments[2]
+                    element.parentNode.removeChild(element)
+
+                    arguments[1].appendChild(overallTag)
+                                            
+                    """, materials, textarea, text, metalsType)
+            except (NoSuchElementException, StaleElementReferenceException):
+                pass
+
+            textarea = self.driver.find_element_by_xpath('//body[@id=\"tinymce\"]').click()
+            sleep(2)
+
+            # switch back to window
+            self.driver.switch_to.window(self.driver.window_handles[0])
+
+            # ---VARIANTS -----
+
+            product.find_element_by_xpath('.//span[contains(text(), "Variants")]').click()
+        
+            # find input fields 
+            tableBody = product.find_element_by_xpath('.//tbody')
+
+            # get all tablerows 
+            tableRows = tableBody.find_elements_by_xpath('.//tr')
+            sleep(2)
+
+            for row in range(1,len(tableRows)):
+                
+                cost = tableRows[row].find_elements_by_css_selector("td")[4].find_element_by_css_selector('span').text
+                # the error occurs because table is loaded, however when it enters the loop, the text nodes are not loaded yet 
+                # sleep 2 before running through table makes sure the table is loaded
+                cost = cost[1:]
+                print('cost', cost)
+                sCost = tableRows[row].find_elements_by_css_selector("td")[5].find_element_by_css_selector('span').text
+                sCost = sCost[1:]
+                print('sCost', sCost)
+                price = round(float(cost) + float(sCost)) + 11 + 0.99
+                fakePrice = 2* round(price) + 0.99
+                print('price',price)
+                print('fakeprice', fakePrice)
+
+                inputValue = tableRows[row].find_element_by_xpath('.//div[@class=\"money-input variants-table__price\"]/div/div/div/input')
+                inputValue.send_keys(Keys.COMMAND + 'a')
+                inputValue.send_keys(str(price))
+                inputValue.send_keys(Keys.TAB) 
+
+                compareValue = tableRows[row].find_elements_by_css_selector("td")[8].find_element_by_css_selector('input')
+                compareValue.send_keys(str(fakePrice))
+                compareValue.send_keys(Keys.TAB)
+
+            # IMAGES 
+
+            # deselect image
+            """ product.find_element_by_xpath('//span[contains(text(), "Images")]').click()
+            sleep(2)
+            product.find_element_by_xpath('.//div[@class=\"product-image__overlay\"]').click() """
+
+            sleep(2)
+            #Import to Store
+            # product.find_element_by_xpath('.//button[@class=\"push-to-shop btn btn-primary btn-regular\"]').click()
+            i+=1
 
 def fetchImagesFromWebsite():
     # check wether product is from Perfect Stranger 
@@ -286,7 +414,12 @@ def fetchImagesFromWebsite():
         self.driver.switch_to.window(self.driver.window_handles[0])
         sleep(3)
 
-oberlo = Oberlo('https://app.oberlo.com/import', 'cottagecoreoutfit@gmail.com', 'Wassermann2001')
+#oberlo = Oberlo('https://app.oberlo.com/import', 'cottagecoreoutfit@gmail.com', 'Wassermann2001')
+oberlo = Oberlo('https://app.oberlo.com/import', 'angelcoreshop@gmail.com', 'lillyhara3113')
 sleep(4)
 #oberlo.fillProduct()
-oberlo.runAllPages()
+# oberlo.runAllPages(self.fillProduct)
+oberlo.runAllPages(oberlo.editProduct)
+
+#lillyhara3113 
+#angelcoreshop@gmail.com

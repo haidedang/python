@@ -31,6 +31,7 @@ def extract():
 
 host = "https://cottagecore-outfits.myshopify.com"
 success = {}
+products = {}
 
 class Shopify:
 # open Shopify admin All Product view 
@@ -155,7 +156,6 @@ class Shopify:
     def getAllProducts(self):
         productList = self.driver.find_element_by_xpath("//div[@class=\"Polaris-Page__Content_xd1mk\"]")
         productList = productList.find_elements_by_xpath(".//ul[@class=\"v0Su5 _3jLY9\"]/li")
-        print(productList)
         return productList
        
     def addTables(self):
@@ -195,7 +195,6 @@ class Shopify:
         inputField.send_keys("Cottagely")
         inputField.send_keys(Keys.RETURN)
 
-       
     def archiveTables(self):
         self.driver.find_element_by_xpath("//a[@id='active']").click()
         sleep(2)
@@ -232,11 +231,135 @@ class Shopify:
             href = product.find_element_by_xpath(".//div[@testid=\"ProductTitles\"]/span/a").get_attribute('href')
             self.executeProduct(href, self.deleteTables)
 
-shopify = Shopify('https://cottagecore-outfits.myshopify.com/admin/products?selectedView=all', 'cottagecoreoutfit@gmail.com', 'Wassermann2001')
+    def changePrices(self):
+        self.driver.find_element_by_xpath("//a[@id='active']").click()
+        sleep(2)
+        self.driver.find_element_by_xpath('//button[@aria-label="Next"]').click()
+        sleep(4)
+        while True:
+            productList = self.getAllProducts()
+            for product in productList:
+                    href = product.find_element_by_xpath(".//div[@testid=\"ProductTitles\"]/span/a").get_attribute('href')
+                    self.executeProduct(href, self.changePrice)
+            sleep(4)
+            self.driver.find_element_by_xpath('//button[@aria-label="Next"]').click()
+            sleep(4)
+    
+    def changePrice(self, url):
+        cost = self.driver.find_element_by_xpath('//input[@id="PolarisTextField2"]').get_attribute('value')
+        price = round(float(cost) + 0.1*float(cost)) + 0.99
+        print(price)
+        positionDiv = self.driver.find_elements_by_xpath("//div[@class='_2MM1C']/div/div[contains(text(),'Price')]")
+        position = self.driver.execute_script("""
+            var i = 2;
+            while( (arguments[0] = arguments[0].previousSibling) != null ) 
+            i++;
+            return i
+        """, positionDiv)
+        position = str(position)
+        print('price at position', position)
+
+        rows = self.driver.find_elements_by_xpath("//ul[@class='_3K9fP']/*")
+        sleep(3)
+        for row in rows:
+            inputValue= row.find_element_by_xpath('.//div[contains(text(),"€")]/following-sibling::input')
+            #inputValue = inputDiv.find_element_by_xpath('.//input')
+            cost = inputValue.get_attribute('value')
+            print ('old price', cost)
+            price = round(float(cost) + 0.1*float(cost)) + 0.99
+            print('new price', price)
+            inputValue.send_keys(Keys.COMMAND + 'a')
+            inputValue.send_keys(str(price))
+            inputValue.send_keys(Keys.TAB) 
+
+    def scrapePrices(self, orderID):
+        #self.driver.find_element_by_xpath("//span[contains(text(), 'Orders')").click()
+        sleep(2)
+        i= 0
+        while True:
+            i +=1
+            try:
+                stringID = '#' + str(orderID)
+                order = self.driver.execute_script("""
+                    array = document.body.getElementsByTagName('span')
+                    let found 
+                    for (let i = 0 ; i< array.length ; i++){ if(array[i].innerText == arguments[0]){found = array[i]; break;} }
+                    return found
+                """, stringID)
+                price = self.driver.execute_script("""
+                    return arguments[0].parentElement.parentNode.parentNode.children[5].textContent
+                """, order)
+                price = price[1:]
+                print(price)
+                products[orderID]= {}
+                products[orderID]["price"] = int(price)
+                # put all prices to orderID 
+                orderID += 1
+            except: 
+                break
+        print(products)
+        print('end of loop')
+        
+        
+        
+    def getCosts(self, orderID, endID):
+        self.driver.get("https://gifutoshoppu.myshopify.com/admin/apps/printify/app?hmac=22495163e145f33151d798c34428a19dfb894a14179182704577958143809a92&locale=en-DE&new_design_language=true&session=84529564184272628efded0bf9c22c1621ef3d1292a58fea0cbc4a60c4fb4d2e&shop=gifutoshoppu.myshopify.com&timestamp=1610132063")
+        sleep(4)
+        iFrame = self.driver.execute_script("""
+            return document.getElementsByTagName('iframe')[0]
+        """)
+        print(iFrame)
+        self.driver.switch_to.frame(iFrame)
+        order = "Orders"
+        link = self.driver.execute_script("""
+            array = document.body.getElementsByClassName('secondary')
+            let found 
+            for (let i = 0 ; i< array.length ; i++){ 
+                if(array[i].innerText == 'Orders'){
+                    found = array[i]; 
+                    break;} 
+                }
+            return found.href
+        """, order)
+        self.driver.get(link)
+        difference= endID-orderID
+        sleep(3)
+        i= 0
+        while i< difference:
+            self.driver.switch_to.window(self.driver.window_handles[0])
+            stringID = '#' + str(orderID)
+            try:
+                print('processing product', stringID)
+                orderLink = self.driver.execute_script("""
+                    array = document.body.getElementsByTagName('div')
+                    let found 
+                    for (let i = 0 ; i< array.length ; i++){ if(array[i].innerText.substr(0,5) == arguments[0]){found = array[i]; break;} }
+                    return found.parentElement.href
+                """, stringID)
+            except:
+                print('stringID not found')
+                orderID += 1
+                continue
+            self.openProductInNewTab(orderLink)
+            totalCosts = self.driver.execute_script("""
+                let totalCosts = document.body.getElementsByClassName('order__billing__entry order__billing__total')[0].children[1].innerText.substr(4)
+                return totalCosts
+            """)
+            print(totalCosts)
+            products[orderID] = {}
+            products[orderID]["costs"] = float(totalCosts)
+            # put all prices to orderID 
+            orderID += 1
+            i += 1
+            self.driver.close()
+        print(products)
+
+# shopify = Shopify('https://cottagecore-outfits.myshopify.com/admin/products?selectedView=all', 'cottagecoreoutfit@gmail.com', 'Wassermann2001')
+shopify = Shopify('https://gifutoshoppu.myshopify.com/admin/apps/printify/app?hmac=c009496353aa6388ce1cab62d5eb70da46ab89e86c5ddc202b47b4affbef1a75&locale=en-DE&new_design_language=true&session=53dd6d00afe02c54e29da83a37ecdb162dbd715f6b879b7df7f763b820d222c3&shop=gifutoshoppu.myshopify.com&timestamp=1610152491',"cottagely.shop@gmail.com","Wassermann2001")
 sleep(2)
 # shopify.specificTable('Academia Girl Dress', shopify.deleteTables)
 # shopify.deleteAllTablePictures()
 
 #shopify.specificTable('Angel Dream Dress', shopify.archiveTable)
-#shopify.addTables()
-shopify.changeVendors()
+shopify.getCosts(2530,2558)
+#shopify.changeVendors()
