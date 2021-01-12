@@ -326,11 +326,11 @@ class InstaBot:
                         pass
                     sleep(2)
                     try:
-                        self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(random.choice(comments))
-                        sleep(2)
-                        self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(Keys.RETURN)
-                        sleep(4)
-                        print('commented and liked sucessfully')
+                        #self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(random.choice(comments))
+                        #sleep(2)
+                        #self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(Keys.RETURN)
+                        #sleep(4)
+                        print('liked sucessfully')
                         userData["users"][k] = True
                         usersDB.saveState(userData["users"])
                     except NoSuchElementException: 
@@ -418,16 +418,17 @@ class InstaBot:
             highQualityPictures[link]=True
             print('saved result', result)
            
-    def commentAndLike(self):
+    def commentAndLike(self, n):
         users = usersDB.loadState('userHQ.pickle')
         randomList = [k for k,v in users.items() if v == False]
         print('length of userDB', len(randomList))
         random.shuffle(randomList)
         selected = []
-        for k in range(0,50):
+        for k in range(0,n):
             selected.append(random.choice(randomList))
         print('random selected users', selected)
         for k in selected:
+            sleep(20)
             print('processing userList', len(selected))
             if users[k]== "PRIVATE":
                 print('useraccount is private')
@@ -467,11 +468,11 @@ class InstaBot:
                 pass
             sleep(2)
             try:
-                self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(random.choice(comments))
+                #self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(random.choice(comments))
                 sleep(2)
-                self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(Keys.RETURN)
+                #self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(Keys.RETURN)
                 sleep(4)
-                print('commented and liked sucessfully')
+                print('liked sucessfully')
                 users[k] = True
                 usersDB.saveState(users, 'userHQ.pickle')
             except NoSuchElementException: 
@@ -482,6 +483,6 @@ class InstaBot:
         print(selected)
            
 my_bot = InstaBot('cottagecorefashion', 'wassermann2001') #not changing
-my_bot.commentAndLike()
+my_bot.commentAndLike(50)
 # my_bot.scrape()
 
