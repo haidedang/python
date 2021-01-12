@@ -122,6 +122,8 @@ class InstaBot:
         # x = number followers
         x = 0 
         for k in selected: 
+            # Wait 20 seconds between each request
+            sleep(20)
             print('number of users liked, commented, and followed', x)
             if n < comment:
                 if users[k]== "PRIVATE":
@@ -173,18 +175,18 @@ class InstaBot:
                     usersDB.saveState(users, 'userHQ.pickle')
                     pass
                 sleep(2)
-                """ try:
-                    self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(random.choice(comments))
-                    sleep(2)
-                    self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(Keys.RETURN)
-                    sleep(4)
-                    print('commented and liked sucessfully')
+                try:
+                    #self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(random.choice(comments))
+                    #sleep(2)
+                    #self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(Keys.RETURN)
+                    #sleep(4)
+                    print('liked sucessfully')
                     users[k] = True
                     usersDB.saveState(users, 'userHQ.pickle')
                     n += 1
                 except NoSuchElementException: 
                     print(NoSuchElementException)
-                    pass """
+                    pass
                 self.driver.close()
             else:
                 print('limit of public comments reached. Exit')
