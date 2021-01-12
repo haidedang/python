@@ -307,4 +307,4 @@ class InstaBot:
 
 my_bot = InstaBot('hot__brunettes', 'Wassermann2001') #not changing
 
-my_bot.commentAndLike(10,1)
+my_bot.commentAndLike(50,7)
