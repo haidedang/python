@@ -11,10 +11,11 @@ import shutil
 from cv2 import cv2
 import random
 import sys
-sys.path.append('/home/seluser/Instagram/utils')
-import pickle
-#sys.path.append('/Users/Hai/github/python/utils')
 
+sys.path.append('/Users/Hai/github/python/Brunettes')
+sys.path.append('/Users/Hai/github/python/utils')
+import usersDB
+import pickle
 from util import login
 import pickle
 
@@ -263,9 +264,9 @@ class Shopify:
             self.executeProduct(href, self.deleteTables)
 
     def changePrices(self):
-        self.driver.find_element_by_xpath("//a[@id='active']").click()
+        self.driver.find_element_by_xpath("//a[@id='draft']").click()
         sleep(2)
-        self.driver.find_element_by_xpath('//button[@aria-label="Next"]').click()
+        # self.driver.find_element_by_xpath('//button[@aria-label="Next"]').click()
         sleep(4)
         while True:
             productList = self.getAllProducts()
@@ -278,8 +279,8 @@ class Shopify:
     
     def changePrice(self, url):
         cost = self.driver.find_element_by_xpath('//input[@id="PolarisTextField2"]').get_attribute('value')
-        price = round(float(cost) + 0.1*float(cost)) + 0.99
-        print(price)
+        #price = round(float(cost) + 0.1*float(cost)) + 0.99
+        #print(price)
         positionDiv = self.driver.find_elements_by_xpath("//div[@class='_2MM1C']/div/div[contains(text(),'Price')]")
         position = self.driver.execute_script("""
             var i = 2;
@@ -297,7 +298,7 @@ class Shopify:
             #inputValue = inputDiv.find_element_by_xpath('.//input')
             cost = inputValue.get_attribute('value')
             print ('old price', cost)
-            price = round(float(cost) + 0.1*float(cost)) + 0.99
+            price = round(float(cost) + 5) + 0.99
             print('new price', price)
             inputValue.send_keys(Keys.COMMAND + 'a')
             inputValue.send_keys(str(price))
@@ -308,8 +309,8 @@ class Shopify:
         sleep(2)
         i= 0
         while True:
-            i +=1
             try:
+                i +=1
                 stringID = '#' + str(orderID)
                 order = self.driver.execute_script("""
                     array = document.body.getElementsByTagName('span')
@@ -323,35 +324,21 @@ class Shopify:
                 price = price[1:]
                 print(price)
                 products[orderID]= {}
-                products[orderID]["price"] = int(price)
+                products[orderID]["price"] = float(price)
                 # put all prices to orderID 
                 orderID += 1
-            except: 
+            except:
+                print('reached the end')
                 break
         print(products)
         print('end of loop')
+        usersDB.saveState(products, 'revenue.pickle')
         
         
     def getCosts(self, orderID, endID):
-        self.driver.get("https://gifutoshoppu.myshopify.com/admin/apps/printify/app?hmac=22495163e145f33151d798c34428a19dfb894a14179182704577958143809a92&locale=en-DE&new_design_language=true&session=84529564184272628efded0bf9c22c1621ef3d1292a58fea0cbc4a60c4fb4d2e&shop=gifutoshoppu.myshopify.com&timestamp=1610132063")
-        sleep(4)
-        iFrame = self.driver.execute_script("""
-            return document.getElementsByTagName('iframe')[0]
-        """)
-        print(iFrame)
-        self.driver.switch_to.frame(iFrame)
-        order = "Orders"
-        link = self.driver.execute_script("""
-            array = document.body.getElementsByClassName('secondary')
-            let found 
-            for (let i = 0 ; i< array.length ; i++){ 
-                if(array[i].innerText == 'Orders'){
-                    found = array[i]; 
-                    break;} 
-                }
-            return found.href
-        """, order)
-        self.driver.get(link)
+        products= usersDB.loadState('revenue.pickle')
+       
+        self.driver.get('https://printify.com/app/orders/2')
         difference= endID-orderID
         sleep(3)
         i= 0
@@ -376,14 +363,18 @@ class Shopify:
                 return totalCosts
             """)
             print(totalCosts)
-            products[orderID] = {}
             products[orderID]["costs"] = float(totalCosts)
             # put all prices to orderID 
             orderID += 1
             i += 1
+            usersDB.saveState(products, 'revenue.pickle')
+            print(products)
             self.driver.close()
-        print(products)
     
+    def saveCSV (self, orderID, endID):
+        self.scrapePrices(orderID)
+        sleep(2)
+        
     """ def test(self): 
         arr = {"names": ["Hans", "Zocker", "Coolio"]}
         with open(os.getcwd()+  '/names.pickle', 'wb') as handle:
@@ -395,19 +386,28 @@ class Shopify:
             obj = pickle.load(handle)
             print(obj) """
         
+def test():
+    usersDB.loadState('revenue.pickle')
         
-# shopify = Shopify('https://cottagecore-outfits.myshopify.com/admin/products?selectedView=all', 'cottagecoreoutfit@gmail.com', 'Wassermann2001')
-shopify = Shopify('https://gifutoshoppu.myshopify.com/admin/apps/printify/app?hmac=c009496353aa6388ce1cab62d5eb70da46ab89e86c5ddc202b47b4affbef1a75&locale=en-DE&new_design_language=true&session=53dd6d00afe02c54e29da83a37ecdb162dbd715f6b879b7df7f763b820d222c3&shop=gifutoshoppu.myshopify.com&timestamp=1610152491',"cottagely.shop@gmail.com","Wassermann2001")
+# shopify = Shopify('https://gifutoshoppu.myshopify.com/admin/orders?selectedView=all', 'cottagecoreoutfit@gmail.com', 'Wassermann2001')
 
-# shopify = Shopify('https://cottagecore-outfits.myshopify.com/admin/products?selectedView=all', 'cottagecoreoutfit@gmail.com', 'Wassermann2001')
+#shopify = Shopify('https://gifutoshoppu.myshopify.com/admin/apps/printify/app?hmac=c009496353aa6388ce1cab62d5eb70da46ab89e86c5ddc202b47b4affbef1a75&locale=en-DE&new_design_language=true&session=53dd6d00afe02c54e29da83a37ecdb162dbd715f6b879b7df7f763b820d222c3&shop=gifutoshoppu.myshopify.com&timestamp=1610152491',"cottagely.shop@gmail.com","Wassermann2001")
+
+
+shopify = Shopify('https://cottagecore-outfits.myshopify.com/admin/products?selectedView=all', 'cottagely@gmail.com', 'Wassermann2001')
 sleep(2)
 # shopify.specificTable('Academia Girl Dress', shopify.deleteTables)
 # shopify.deleteAllTablePictures()
 
 #shopify.specificTable('Angel Dream Dress', shopify.archiveTable)
-shopify.getCosts(2530,2558)
+
 #shopify.changeVendors()
 #shopify.addTables()
 # shopify.changeVendors()
 #shopify.test()
 # shopify.downloadPictures()
+
+# shopify.scrapePrices(2522)
+sleep(2)
+shopify.changePrices()
+# shopify.getCosts(2530,2531)

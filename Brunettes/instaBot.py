@@ -37,7 +37,7 @@ mySet = list(set(arr))
 
 def hashTagSelector(hashtags):
     result= []
-    for i in range(0,20):
+    for i in range(0,10):
         element = random.choice(hashtags)
         if element not in result:
             result.append(element)
@@ -521,7 +521,6 @@ class InstaBot:
                 os.remove(os.getcwd()+'/0images/0.png')
                 usersDB.saveState(posts, 'uploaded.pickle')
                 break
-    
 
     def post(self):
         try:  

@@ -21,11 +21,11 @@ import pickle
 chrome_options = Options()
 shopifyImages = {}
 
-i=0 
+i=1 
 
 defaultObject= {
     "season": '',
-    "neckline": '',
+    "neckline": 'V-Neck',
     "style": '',
     "patternType": '',
     "dressesLength": '',
@@ -85,6 +85,7 @@ class Oberlo:
             except (NoSuchElementException, StaleElementReferenceException) :
                 print('ERROR NO NECKLINE')
                 neckline = defaultObject["neckline"]
+                print(neckline)
             try:
                 style = text.find_element_by_xpath('.//strong[contains(text(), "Style:")]')
             except (NoSuchElementException, StaleElementReferenceException) :
@@ -141,11 +142,11 @@ class Oberlo:
                     arguments[1].appendChild(overallTag)
                                             
                     """, materials, textarea, text, season, neckline, style, patternType, dressesLength)
-            except (NoSuchElementException, StaleElementReferenceException):
+            except:
                 pass
 
             textarea = self.driver.find_element_by_xpath('//body[@id=\"tinymce\"]').click()
-            sleep(2)
+            sleep(3)
 
             # switch back to window
             self.driver.switch_to.window(self.driver.window_handles[0])
@@ -192,9 +193,8 @@ class Oberlo:
     def runAllPages(self, action):
         global page
         while True:
-            sleep(4)
+           
             # self.fillProduct()
-            action()
             sleep(2)
             page += 1 
             number = str(page)
@@ -205,6 +205,10 @@ class Oberlo:
             except NoSuchElementException:
                 print('No pages left')
                 break
+            sleep(4)
+            action()
+            sleep(4)
+
     
     def editProduct(self):
         # change title 
@@ -414,12 +418,13 @@ def fetchImagesFromWebsite():
         self.driver.switch_to.window(self.driver.window_handles[0])
         sleep(3)
 
-#oberlo = Oberlo('https://app.oberlo.com/import', 'cottagecoreoutfit@gmail.com', 'Wassermann2001')
-oberlo = Oberlo('https://app.oberlo.com/import', 'angelcoreshop@gmail.com', 'lillyhara3113')
+oberlo = Oberlo('https://app.oberlo.com/import', 'cottagecoreoutfit@gmail.com', 'Wassermann2001')
+# oberlo = Oberlo('https://app.oberlo.com/import', 'angelcoreshop@gmail.com', 'lillyhara3113')
 sleep(4)
 #oberlo.fillProduct()
-# oberlo.runAllPages(self.fillProduct)
-oberlo.runAllPages(oberlo.editProduct)
+oberlo.runAllPages(oberlo.fillProduct)
+#oberlo.runAllPages(oberlo.editProduct)
 
 #lillyhara3113 
 #angelcoreshop@gmail.com
+
