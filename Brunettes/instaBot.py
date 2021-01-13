@@ -28,7 +28,7 @@ hashTags="#nfp #finest #babeswithcurves #babesofinstagram #babesofinstagram #fit
 slogans = [ "WEAR or TEAR?", "SHOP or FLOP?", "TAKE or TOSS?", "Rate this outfit from 1-10!", "YAY or NAY?"]
 referall= "Click on link in Bio to shop this dress! <3"
 comments = ["Amazing.", "So lovely <3", "I love this", "Wow <3" ]
-slogan= "like or nah?"
+slogan= "Doubletap that beauty <3"
 
 
 arr = hashTags.split() 
@@ -317,7 +317,6 @@ class InstaBot:
         self.driver.close()
         return result
         
-    
     def getUserHandle(self):
         try:
             userProfile = self.driver.execute_script("""
@@ -509,18 +508,105 @@ class InstaBot:
                 print('babe has already been uploaded')
                 continue
             except:
-                print('new Babe uploading...')
-                post = list(posts[babe].keys())[0]
-                print(post)
-                image = posts[babe][post]["src"]
-                urllib.request.urlretrieve(image, os.getcwd()+ f"/0images/0.png")
-                self.post()
-                posts[babe]["iteration"] = 0 
+                try:
+                    print('new Babe uploading...')
+                    post = list(posts[babe].keys())[0]
+                    print('fetching posturl', post)
+                    image = posts[babe][post]["src"]
+                    urllib.request.urlretrieve(image, os.getcwd()+ f"/0images/0.png")
+                    sleep(2)
+                    self.post()
+                    posts[babe]["iteration"] = 0 
+                    print('delete again')
+                    os.remove(os.getcwd()+'/0images/0.png')
+                    usersDB.saveState(posts, 'uploaded.pickle')
+                    break
+                except:
+                    print("empty user... skipping user")
+                    continue
 
                 print('delete again')
                 os.remove(os.getcwd()+'/0images/0.png')
                 usersDB.saveState(posts, 'uploaded.pickle')
                 break
+                
+    
+    def scrapeUsers(self):
+        users = usersDB.loadState('userHQ.pickle')
+        for link in highQualityPictures:
+            # self.driver.get('https://www.instagram.com/explore/tags/'+ hashtag + '/')
+            if (highQualityPictures[link]):
+                    # if image already has been assigned once or went through, skip it
+                    print('image has already been scraped run through, skipp iteration')
+                    continue
+            self.driver.get(link)
+            sleep(5)
+            imageSrc = self.driver.find_element_by_xpath('//div[@class="KL4Bh"]/img').get_attribute('src')
+            print(imageSrc)
+        
+            print('starting insta bot execution')
+            #first_thumbnail.click()
+            sleep(2)
+            
+            # click liked by users button
+            section = self.driver.find_element_by_xpath("//section[@class='EDfFK ygqzn']")
+            section.find_element_by_xpath(".//button").click()
+            sleep(7)
+            last_height = 0
+            
+            # save all usernames to run through
+            pictureArr= []
+            i= 0
+            end = 0  
+            while True:
+                # save usernames in object 
+                #  usernames = self.driver.find_elements_by_xpath('//div[@class="_1XyCr"]/div[position()=2]/div/div/*')
+                # sleep(3)
+                # print(usernames)
+                sleep(1)
+                userData = self.driver.execute_script("""
+                let obj 
+                let arr=[]
+                var list =  document.querySelector('._1XyCr div:nth-child(2) div div').children
+                for (i = 0; i < list.length; i++) {
+                    var title =  list[i].querySelector('div:nth-child(2) div div span a').getAttribute('title')
+                    if (arguments[0][title] == undefined ){
+                        arguments[0][title] = false
+                        arguments[1].push(title)
+                    }   
+                }
+                obj = {
+                    "users": arguments[0],
+                    "userPictureList":arguments[1]
+                }
+                return obj
+                """, users, pictureArr)
+                users = userData["users"]
+                print(len(list(users.keys())))
+                last_height = last_height + 1000
+                container = self.driver.find_element_by_xpath('//div[@class="_1XyCr"]/div[position()=2]/div')
+                self.driver.execute_script("arguments[1].scrollTo(0, arguments[0]);", last_height, container)
+                sleep(1)
+                new_height = self.driver.execute_script("return arguments[0].scrollHeight", container)
+                if end == new_height:
+                    print('reached end of DIV')
+                    break
+                else:
+                    end = new_height
+                i +=1
+                print(i)
+                print('new Height', new_height)
+                print('last_height', last_height)
+                if i==600:
+                    i= 0
+                    break
+
+            # comment and like all these users
+            print('länge objekt', len(list(users.keys())))
+            usersDB.saveState(users, 'userHQ.pickle')
+            result = usersDB.loadState('userHQ.pickle')
+            highQualityPictures[link]=True
+            print('saved result', result)
 
     def post(self):
         try:  
@@ -569,9 +655,13 @@ class InstaBot:
         pyautogui.click()
 
         #open File
-        pyautogui.moveTo(1084, 826)
+        """ pyautogui.moveTo(1084, 826)
         sleep(2)
-        pyautogui.click()
+        pyautogui.click() """
+
+        pyautogui.moveTo(200, 105)
+        sleep(2)
+        pyautogui.doubleClick()
 
         sleep(4)
 
@@ -580,6 +670,7 @@ class InstaBot:
         
         self.driver.find_element_by_xpath("//textarea[@autocomplete=\"off\"]")\
             .send_keys(slogan + "\n" + "\n" + "\n" + "\n" + hashTagSelector(mySet))
+        sleep(4)
         try:
             self.driver.find_element_by_xpath("//button[contains(text(), 'Teilen')]").click()
         except NoSuchElementException:
@@ -669,6 +760,36 @@ def addPictureSrc():
                 except:
                     continue
 
+def debug():
+    posts = usersDB.loadState('uploaded.pickle')
+    babes = list(posts.keys())
+    i= 0 
+    for babe in babes:
+        try:
+            i += 1
+            print(posts[babe]["iteration"])
+            print('babe has already been uploaded')
+            continue
+        except:
+            try:
+                print('new Babe uploading...')
+                post = list(posts[babe].keys())[0]
+                print(post)
+                image = posts[babe][post]["src"]
+                urllib.request.urlretrieve(image, os.getcwd()+ f"/0images/0.png")
+                # self.post()
+                posts[babe]["iteration"] = 0 
+
+                print('delete again')
+                os.remove(os.getcwd()+'/0images/0.png')
+                # usersDB.saveState(posts, 'uploaded.pickle')
+                break
+            except:
+                print("empty user... skipping user")
+                continue
+
+
+
 my_bot = InstaBot('hot__brunettes', 'Wassermann2001') #not changing
 #my_bot.scrape('___brunettes___')
 # my_bot.scrape()
@@ -679,6 +800,7 @@ my_bot = InstaBot('hot__brunettes', 'Wassermann2001') #not changing
 #urllib.request.urlretrieve("https://instagram.ftxl2-1.fna.fbcdn.net/v/t51.2885-15/e35/p1080x1080/135374127_679134179449175_8815434748395577046_n.jpg?_nc_ht=instagram.ftxl2-1.fna.fbcdn.net&_nc_cat=111&_nc_ohc=J-kWr0NQ4yAAX_UnAvK&tp=1&oh=c0cbc1275915e422ccd73bc560e1dc02&oe=601B1CA9", os.getcwd()+ f"/images/1.png")
 #print(usersDB.loadState('babes.pickle'))
 
-
+#debug()
 
 my_bot.uploadPost()
+# my_bot.scrapeUsers()
