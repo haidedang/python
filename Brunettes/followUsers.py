@@ -109,7 +109,7 @@ class InstaBot:
             except NoSuchElementException:
                 pass
                       
-    def commentAndLike(self, comment, follow):
+    def commentAndLike(self, comment, follow, seconds):
         users = usersDB.loadState('userHQ.pickle')
         randomList = [k for k,v in users.items() if v == False]
         print('length of userDB', len(randomList))
@@ -123,7 +123,7 @@ class InstaBot:
         x = 0 
         for k in selected: 
             # Wait 20 seconds between each request
-            sleep(20)
+            sleep(seconds)
             print('number of users liked, commented, and followed', x)
             if n < comment:
                 if users[k]== "PRIVATE":
@@ -176,11 +176,24 @@ class InstaBot:
                     pass
                 sleep(2)
                 try:
-                    #self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(random.choice(comments))
-                    #sleep(2)
-                    #self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(Keys.RETURN)
-                    #sleep(4)
-                    print('liked sucessfully')
+                    self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys("@" + k + " " + random.choice(comments))
+                    sleep(2)
+                    self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(Keys.RETURN)
+                    sleep(4)
+                    try:
+                        postButton = self.driver.execute_script("""
+                            let buttons = document.body.getElementsByTagName("button")
+                            for (let i = 0; i< buttons.length; i++){ 
+                                if (buttons[i].textContent == "Post"){
+                                    return buttons[i]
+                                    }
+                                }
+                        """)
+                        postButton.click()
+                        sleep(2)
+                        print('liked and commented sucessfully')
+                    except:
+                        print("comment failed")
                     users[k] = True
                     usersDB.saveState(users, 'userHQ.pickle')
                     n += 1
@@ -307,4 +320,4 @@ class InstaBot:
 
 my_bot = InstaBot('hot__brunettes', 'Wassermann2001') #not changing
 
-my_bot.commentAndLike(50,7)
+my_bot.commentAndLike(30,2,30)

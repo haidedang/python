@@ -418,71 +418,90 @@ class InstaBot:
             highQualityPictures[link]=True
             print('saved result', result)
            
-    def commentAndLike(self, n):
+    def commentAndLike(self, comment, seconds):
         users = usersDB.loadState('userHQ.pickle')
         randomList = [k for k,v in users.items() if v == False]
         print('length of userDB', len(randomList))
         random.shuffle(randomList)
         selected = []
-        for k in range(0,n):
+        for k in range(0,200):
             selected.append(random.choice(randomList))
         print('random selected users', selected)
+        n = 0
         for k in selected:
-            sleep(20)
+            sleep(seconds)
             print('processing userList', len(selected))
-            if users[k]== "PRIVATE":
-                print('useraccount is private')
-                continue
-            if users[k]== True:
-                print('user has already been commented')
-                continue
-            print(k)
-            self.driver.switch_to.window(self.driver.window_handles[0])
-            sleep(7)
-            self.driver.execute_script("window.open('','_blank');")
-            sleep(2)
-            self.driver.switch_to.window(self.driver.window_handles[1])
-            sleep(2)
-            self.driver.get("https://instagram.com/" + k + '/')
-            sleep(2)
-            try:
-                self.driver.find_element_by_xpath('//article[@class="ySN3v"]/div/div/div/div/a/div').click()
+            if n < comment: 
+                if users[k]== "PRIVATE":
+                    print('useraccount is private')
+                    continue
+                if users[k]== True:
+                    print('user has already been commented')
+                    continue
+                print(k)
+                self.driver.switch_to.window(self.driver.window_handles[0])
+                sleep(7)
+                self.driver.execute_script("window.open('','_blank');")
                 sleep(2)
-            except:
-                print('error', 'weird stuff going on')
-                pass
-            try:
-                #like picture 
-                self.driver.execute_script("""
-                    document.querySelector('svg[aria-label="Like"]').parentNode.click()
-                """)
-                # write a comment 
-            except:
-                pass
-            try:
-                self.driver.find_element_by_xpath('//textarea[@class="Ypffh"]').click()
-            except NoSuchElementException:
-                print("This account is private. Flagging as private")
-                users[k] = "PRIVATE"
-                usersDB.saveState(users, 'userHQ.pickle')
-                pass
-            sleep(2)
-            try:
-                #self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(random.choice(comments))
+                self.driver.switch_to.window(self.driver.window_handles[1])
                 sleep(2)
-                #self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(Keys.RETURN)
-                sleep(4)
-                print('liked sucessfully')
-                users[k] = True
-                usersDB.saveState(users, 'userHQ.pickle')
-            except NoSuchElementException: 
-                print(NoSuchElementException)
-                pass
-            self.driver.close()
+                self.driver.get("https://instagram.com/" + k + '/')
+                sleep(2)
+                try:
+                    self.driver.find_element_by_xpath('//article[@class="ySN3v"]/div/div/div/div/a/div').click()
+                    sleep(2)
+                except:
+                    print('error', 'weird stuff going on')
+                    pass
+                try:
+                    #like picture 
+                    self.driver.execute_script("""
+                        document.querySelector('svg[aria-label="Like"]').parentNode.click()
+                    """)
+                    # write a comment 
+                except:
+                    pass
+                try:
+                    self.driver.find_element_by_xpath('//textarea[@class="Ypffh"]').click()
+                except NoSuchElementException:
+                    print("This account is private. Flagging as private")
+                    users[k] = "PRIVATE"
+                    usersDB.saveState(users, 'userHQ.pickle')
+                    pass
+                sleep(2)
+                try:
+                    self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys("@" + k + " " + random.choice(comments))
+                    sleep(2)
+                    self.driver.find_element_by_xpath('//form[@class="X7cDz"]/textarea').send_keys(Keys.RETURN)
+                    sleep(4)
+                    try:
+                        postButton = self.driver.execute_script("""
+                            let buttons = document.body.getElementsByTagName("button")
+                            for (let i = 0; i< buttons.length; i++){ 
+                                if (buttons[i].textContent == "Post"){
+                                    return buttons[i]
+                                    }
+                                }
+                        """)
+                        postButton.click()
+                        sleep(2)
+                        print('liked and commented sucessfully')
+                    except:
+                        print("comment failed")
+                    users[k] = True
+                    usersDB.saveState(users, 'userHQ.pickle')
+                    n += 1
+                except NoSuchElementException: 
+                    print(NoSuchElementException)
+                    pass
+                self.driver.close()
+            else:
+                print('limit of public comments reached. Exit')
+                break
         print([k for k,v in users.items() if v == True])
         print(selected)
            
 my_bot = InstaBot('cottagecorefashion', 'wassermann2001') #not changing
-my_bot.commentAndLike(50)
+my_bot.commentAndLike(30,30)
 # my_bot.scrape()
 
