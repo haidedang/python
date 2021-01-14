@@ -1,11 +1,11 @@
 DISPLAY=:99.0
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
-10 1,3,5,7,11,13,15,21,23 * * * cd /home/seluser/Brunettes && python3 followUsers.py && pkill chrome
+10 1,3,5,7,11,13,15,21 * * * cd /home/seluser/Brunettes && python3 followUsers.py && pkill chrome
 5 1,3,5,7,11,13,15,21,23 * * * pkill chrome
 30 17,20,22 * * * cd /home/seluser/Brunettes && python3 instaBot.py >> /tmp/test3.txt 2>&1 && pkill chrome
 25 17,20,22 * * * pkill chrome
-
+10 23 * * * cd /home/seluser/Brunettes && python3 deFollowUsers.py && pkill chrome
 
 
 

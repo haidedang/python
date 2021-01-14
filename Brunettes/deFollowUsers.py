@@ -152,5 +152,5 @@ class InstaBot:
             print('one week has not passed yet')
 
 my_bot = InstaBot('hot__brunettes', 'Wassermann2001') #not changing
+my_bot.deFollowUsers(180)
 
-my_bot.deFollowUsers(20)
