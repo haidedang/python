@@ -126,22 +126,24 @@ class InstaBot:
             document.getElementsByClassName('vBF20 _1OSdk')[0].children[0].click()
         """)
         sleep(2) 
+        print('defollowed User')
         self.driver.execute_script("""
             document.getElementsByClassName('mt3GC')[0].children[0].click()
         """)
         sleep(2)
 
-    def deFollowUsers(self):
+    def deFollowUsers(self, seconds):
         following = usersDB.loadState('following.pickle')
         # run once at the end of a day
         # today = datetime.date.today()
         today = datetime.date.today()
-        weekBefore = today - datetime.timedelta(days=7)
+        weekBefore = today - datetime.timedelta(days=2)
         print(weekBefore)
         try:
             print('access week ago', following[str(weekBefore)])
             for elem in following[str(weekBefore)]: 
                 print('enter loop')
+                sleep(seconds)
                 self.getUser(elem, self.deFollow)
             following[str(weekBefore)].append('defollowed')
             usersDB.saveState(following, 'following.pickle')
@@ -151,4 +153,4 @@ class InstaBot:
 
 my_bot = InstaBot('hot__brunettes', 'Wassermann2001') #not changing
 
-my_bot.deFollowUsers()
+my_bot.deFollowUsers(20)
